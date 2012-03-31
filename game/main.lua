@@ -9,6 +9,8 @@ local tps = require 'tps'
 local WIN_X, WIN_Y = 1280, 1024
 local MAP_ZOOM = 30
 
+local ATTACH_CAMERA_TO_BEAR = true
+
 -- ----------------------------------------------------------------------
 -- Rendering, viewport management
 -- ----------------------------------------------------------------------
@@ -24,7 +26,9 @@ local function init_render()
 	--
 
 	-- Map viewport is zoomed in quite a bit, because the map
-	-- uses 1 unit = 1 meter = 1 tile
+	-- uses 1 unit = 1 meter = 1 tile.  It hosts these layers:
+    --   g_map_layer     (map tiles)
+    --   b2d_layer       (debug drawing for box2d)
     g_view_map = MOAIViewport.new ()
     g_view_map:setSize ( 0,0, WIN_X/2, WIN_Y )
     g_view_map:setScale ( WIN_X/2 / MAP_ZOOM, WIN_Y / MAP_ZOOM )
@@ -39,6 +43,8 @@ local function init_render()
 	-- "bear hug" minigame
 	--
 
+    -- Bear viewport is standard 1 pixel = 1 unit
+    -- It only contains g_bear_layer
 	g_view_bear = MOAIViewport.new ()
 	g_view_bear:setSize ( WIN_X/2, 0, WIN_X, WIN_Y )
 	g_view_bear:setScale ( WIN_X/2, WIN_Y )
@@ -90,31 +96,26 @@ end
 -- ----------------------------------------------------------------------
 
 function init_test()
-    local quads_test = tps.load_sheet ( 'art/sheet_out.lua' )
-    local quads_map = tps.load_sheet ( 'art/sheet_map.lua',  0.5 )
+    local sheet_test = tps.load_sheet ( 'art/sheet_out.lua' )
+    local sheet_map = tps.load_sheet ( 'art/sheet_map.lua',  0.5 )
 
-    -- local prop = MOAIProp2D.new()
-    -- prop:setDeck( tps.load_single('grass_1.png') )
-    -- prop:setLoc(100,-100)
-    -- g_bear_layer:insertProp(prop)
-
-    local prop = quads_map:make('bg/grass_1')
+    local prop = sheet_map:make('bg/grass_1')
     prop:setLoc(100,-100)
     g_bear_layer:insertProp(prop)
 
-    local prop = quads_map:make('bg/grass_2', 2)
+    local prop = sheet_map:make('bg/grass_2', 2)
     prop:setLoc(130,-130)
     g_bear_layer:insertProp(prop)
 
-    local prop = quads_test:make('cathead')
+    local prop = sheet_test:make('cathead')
     prop:setLoc ( -100, -100 )
     g_bear_layer:insertProp ( prop )
 
-    local prop = quads_test:make('two')
+    local prop = sheet_test:make('two')
     prop:setLoc ( 0, 0 )
     g_bear_layer:insertProp ( prop )
 
-    local prop = quads_test:make('one')
+    local prop = sheet_test:make('one')
     prop:setLoc ( 100, 100 )
     g_bear_layer:insertProp ( prop )
 end
@@ -132,6 +133,11 @@ function main()
 
     g_bear = require 'bear'
     g_bear:init()
+
+    if ATTACH_CAMERA_TO_BEAR then
+        g_map_layer.camera:setParent ( g_bear.body )
+        g_map_layer.camera:setLoc ( 0, 0 )
+    end
 
     -- simple cycle through viewport states, for testing
 	g_input.keymap.p = function(key,down)
