@@ -49,34 +49,55 @@ function Ob:make_mover(dx,dy)
 	return start_or_stop_mover
 end
 
-function Ob:_make_map_base(tx, ty, desc)
+-- Create a prop (and maybe some background grass) at world location (tx, ty).
+--  tx,ty       Worldspace location (1 unit = 1 tile)
+--  desc        An entry in the LOOKUP_OBJ table.  Can be:
+--    { 'sheet', MOAIGfxQuadDeck2D, sprite name [, scale] }
+--    { 'txtr',  texture filename [, scale] }
+--
+function Ob:_make_map_tile(tx, ty, desc)
 	if not desc then return end
-    local prop
+
     if desc[1] == 'sheet' then
         local sheet, sprite, scale = desc[2], desc[3], desc[4]
-        local bg_prop
+        local is_backdrop = false
         if sprite == 'bg/grass_1' then
             -- grass gets randomized
             if math.random() < 0.5 then sprite = 'bg/grass_2' end
+            is_backdrop = true
         else
-            -- non-grass gets a backdrop
-            bg_prop = sheet:make('bg/grass_1', scale)
+            is_backdrop = false
         end
-        prop = sheet:make(sprite, scale)
-        if bg_prop then
-            bg_prop:setParent(prop)
+
+        local prop = sheet:make(sprite, scale)
+        if is_backdrop then
+            prop:setLoc(tx,ty)
+            g_map_layer:insertProp(prop)
+            return prop
+        else
+            -- Create collision, then parent bg and fg props to it
+            local body = g_box2d:addBody ( MOAIBox2DBody.STATIC )
+            body:addRect(0,0,1,1)
+            body:setTransform(tx, ty, 0)
+
+            local bg_prop = sheet:make('bg/grass_1', scale)
+            bg_prop:setParent(body)
             g_map_layer:insertProp(bg_prop)
+
+            prop:setParent(body)
+            g_map_layer:insertProp(prop)
         end
         
     elseif desc[1] == 'txtr' then
         -- texture name, scale
         local txtr_name, scale = desc[2], desc[3]
-        prop = MOAIProp2D.new()
+        local prop = MOAIProp2D.new()
         prop:setDeck(tps.load_single(txtr_name, scale))
+        prop:setLoc(tx,ty)
+        g_map_layer:insertProp(prop)
+        return prop
     end
-    prop:setLoc(tx, ty)
-    g_map_layer:insertProp(prop)
-    return prop
+
 end
 
 function Ob:_read_map(filename)
@@ -101,7 +122,7 @@ function Ob:_read_map(filename)
 		grid[ty] = {}
 		for tx=1,string.len(line) do
 			local desc = LOOKUP_OBJ[string.byte(line, tx)]
-			local prop = self:_make_map_base(tx,ty, desc)
+			local prop = self:_make_map_tile(tx,ty, desc)
 			grid[ty][tx] = prop
 		end
 		if string.len(line) == 0 then

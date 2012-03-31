@@ -1,23 +1,30 @@
 local t = {}
 
--- Load a texture at most once
+local s_loaded_textures = {}
+
+-- Load a texture at most once.
+-- Mostly for internal use.
+--
 -- Pass:
 --   filename	A texture to load
 --
-local s_loaded_textures = {}
-
 function t.get_texture(png)
 	local tex = s_loaded_textures[png]
 	if tex then return tex end
 	tex = MOAITexture.new()
 	tex:load(png)
 	s_loaded_textures[png] = tex
-	print ('loaded',tex)
 	return tex
 end
 
 -- Create a sprite from png.
--- By default, worldspace size == texel size
+--
+-- Pass:
+--   png        Filename
+--   scale      optional scale; if not passed, size == texel size
+--
+-- Returns a Deck
+--
 function t.load_single(png, scale)
 	if not scale then scale = 1 end
     local deck = MOAIGfxQuad2D.new()
@@ -29,18 +36,23 @@ function t.load_single(png, scale)
     return deck
 end
 
-
 -- Load a sprite sheet
 -- It's assumed that there is some sort of custom logic in here
 -- that sets the geometry scale appropriately
+--
+-- Pass:
+--   lua        .lua output from texturepacker
+--   scale      scale to bake into all sprites created from sheet
+--
+-- Returns an object with a :make(sprite_name [,scale)] method
+-- make() returns a MOAIProp2D.
 --
 function t.load_sheet(lua, sheet_scale)
     if not sheet_scale then sheet_scale = 1 end
     local sheet = dofile ( lua )
     local frames = sheet.frames
 
-    local tex = MOAITexture.new ()
-    tex:load ( 'art/' .. sheet.texture )
+    local tex = t.get_texture( 'art/' .. sheet.texture )
     local xtex, ytex = tex:getSize ()
 
     -- Annotate the frame array with uv quads and geometry rects

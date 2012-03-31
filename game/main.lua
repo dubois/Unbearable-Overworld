@@ -1,3 +1,9 @@
+-- You are a bear but for some reason your oxygen comes from hugging
+-- people. Problem is that hugging people breaks their
+-- bones. #Poeticgaming
+-- 
+-- https://twitter.com/#!/petermolydeux/status/94102529461334017
+
 local tps = require 'tps'
 
 local WIN_X, WIN_Y = 1280, 1024
@@ -27,13 +33,7 @@ local function init_render()
     g_map_layer:setViewport ( g_view_map )
 	g_map_layer.camera = MOAICamera2D:new ()
 	g_map_layer:setCamera(g_map_layer.camera)
-
-	local world = MOAIBox2DWorld.new ()
-	world:setGravity ( 0, 0 )
-	world:setUnitsToMeters ( 1 )
-	world:start()
-	g_map_layer.world = world
-	g_map_layer:setBox2DWorld ( world )
+    g_map_layer.camera:setLoc(15,20)
 
 	--
 	-- "bear hug" minigame
@@ -48,9 +48,25 @@ local function init_render()
 	g_bear_layer.camera = MOAICamera2D:new ()
 	g_bear_layer:setCamera(g_bear_layer.camera)
 
+    -- physics
+
+	local world = MOAIBox2DWorld.new ()
+	world:setGravity ( 0, 0 )
+	world:setUnitsToMeters ( 1 )
+	world:start()
+    g_box2d = world
+
+    -- layer, just for box2d rendering
+
+    local b2d_layer = MOAILayer2D.new ()
+    b2d_layer:setViewport( g_view_map )
+    b2d_layer:setCamera( g_map_layer.camera )
+    b2d_layer:setBox2DWorld ( g_box2d ) 
+
 	-- Render quadrants
     MOAISim.pushRenderPass ( g_bear_layer )
     MOAISim.pushRenderPass ( g_map_layer )
+    MOAISim.pushRenderPass ( b2d_layer )
 end
 
 -- Moves the viewports around
