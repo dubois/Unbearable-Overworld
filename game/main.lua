@@ -136,7 +136,9 @@ function main()
 
     if ATTACH_CAMERA_TO_BEAR then
         g_map_layer.camera:setParent ( g_bear.body )
-        g_map_layer.camera:setLoc ( 0, 0 )
+        g_map_layer.camera:setLoc ( 1, 1.5 )    -- bear is 2x3
+    else
+        g_map:setup_debug_input ()
     end
 
     -- simple cycle through viewport states, for testing

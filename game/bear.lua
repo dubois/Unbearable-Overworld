@@ -8,17 +8,17 @@ Ob.move_actions = {}
 
 function Ob:init()
     body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
-    body:addRect ( 0,0, 2,3 )
+    body:addRect ( 0,0, 2-0.1, 3-0.1 )
     body:setTransform ( 10, 10 )
     body:setFixedRotation ( true )
     body:setMassData ( 1 )
     body:setLinearDamping( BEAR_DAMPING )
     self.body = body
 
-	g_input.keymap.i = self:make_mover(0,1)
-	g_input.keymap.j = self:make_mover(-1,0)
-	g_input.keymap.k = self:make_mover(0,-1)
-	g_input.keymap.l = self:make_mover(1,0)
+	g_input.keymap.w = self:make_mover(0,1)
+	g_input.keymap.a = self:make_mover(-1,0)
+	g_input.keymap.s = self:make_mover(0,-1)
+	g_input.keymap.d = self:make_mover(1,0)
 
     -- debug keybindings for tuning
     g_input.keymap.t = function(k,d)

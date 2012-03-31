@@ -134,12 +134,13 @@ end
 
 function Ob:init()
 	self.rows = self:_read_map('levels/1.txt')
+end
 
-	g_input.keymap.w = self:make_mover(0,1)
-	g_input.keymap.a = self:make_mover(-1,0)
-	g_input.keymap.s = self:make_mover(0,-1)
-	g_input.keymap.d = self:make_mover(1,0)
-
+function Ob:setup_debug_input()
+	g_input.keymap.i = self:make_mover(0,1)
+	g_input.keymap.j = self:make_mover(-1,0)
+	g_input.keymap.k = self:make_mover(0,-1)
+	g_input.keymap.l = self:make_mover(1,0)
 end
 
 return Ob
