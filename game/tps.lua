@@ -34,11 +34,13 @@ end
 -- It's assumed that there is some sort of custom logic in here
 -- that sets the geometry scale appropriately
 --
-function t.load_sheet(lua, png)
-    local frames = dofile ( lua ).frames
+function t.load_sheet(lua, sheet_scale)
+    if not sheet_scale then sheet_scale = 1 end
+    local sheet = dofile ( lua )
+    local frames = sheet.frames
 
     local tex = MOAITexture.new ()
-    tex:load ( png )
+    tex:load ( 'art/' .. sheet.texture )
     local xtex, ytex = tex:getSize ()
 
     -- Annotate the frame array with uv quads and geometry rects
@@ -66,10 +68,10 @@ function t.load_sheet(lua, png)
         -- to frame.geomRect.  Origin is at x0,y0 of original sprite
         local cr = frame.spriteColorRect
         local r = {}
-        r.x0 = cr.x
-        r.y0 = cr.y
-        r.x1 = cr.x + cr.width
-        r.y1 = cr.y + cr.height
+        r.x0 = sheet_scale * ( cr.x             )
+        r.y0 = sheet_scale * ( cr.y             )
+        r.x1 = sheet_scale * ( cr.x + cr.width  )
+        r.y1 = sheet_scale * ( cr.y + cr.height )
         frame.geomRect = r
     end
 
@@ -86,7 +88,26 @@ function t.load_sheet(lua, png)
         deck:setRect ( i, r.x0,r.y0, r.x1,r.y1 )
     end
 
-    return deck, names
+    deck.names = names
+
+    function deck:setup(prop, sprite)
+        prop:setDeck(self)
+        local idx = self.names[sprite]
+        if not sprite then
+            print("WARN: missing sprite "..sprite)
+        else
+            prop:setIndex(idx)
+        end
+    end
+    
+    function deck:make(sprite, scale)
+        local prop = MOAIProp2D.new()
+        if scale then prop:setScl(scale,scale) end
+        self:setup(prop, sprite)
+        return prop
+    end
+
+    return deck
 end
 
 return t

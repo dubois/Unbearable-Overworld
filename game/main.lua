@@ -74,30 +74,31 @@ end
 -- ----------------------------------------------------------------------
 
 function init_test()
-    local quads, names = tps.load_sheet ( 'art/out.lua', 'art/out.png' )
-    g_quads = quads
-    g_quads.names = names
+    local quads_test = tps.load_sheet ( 'art/sheet_out.lua' )
+    local quads_map = tps.load_sheet ( 'art/sheet_map.lua',  0.5 )
 
-    local prop = MOAIProp2D.new()
-    prop:setDeck( tps.load_single('grass_1.png') )
+    -- local prop = MOAIProp2D.new()
+    -- prop:setDeck( tps.load_single('grass_1.png') )
+    -- prop:setLoc(100,-100)
+    -- g_bear_layer:insertProp(prop)
+
+    local prop = quads_map:make('bg/grass_1')
     prop:setLoc(100,-100)
     g_bear_layer:insertProp(prop)
 
-    local prop = MOAIProp2D.new ()
-    prop:setDeck ( g_quads )
-    prop:setIndex ( g_quads.names['cathead'] )
+    local prop = quads_map:make('bg/grass_2', 2)
+    prop:setLoc(130,-130)
+    g_bear_layer:insertProp(prop)
+
+    local prop = quads_test:make('cathead')
     prop:setLoc ( -100, -100 )
     g_bear_layer:insertProp ( prop )
 
-    local prop = MOAIProp2D.new ()
-    prop:setDeck ( g_quads )
-    prop:setIndex ( g_quads.names['two'] )
+    local prop = quads_test:make('two')
     prop:setLoc ( 0, 0 )
     g_bear_layer:insertProp ( prop )
 
-    local prop = MOAIProp2D.new ()
-    prop:setDeck ( g_quads )
-    prop:setIndex ( g_quads.names['one'] )
+    local prop = quads_test:make('one')
     prop:setLoc ( 100, 100 )
     g_bear_layer:insertProp ( prop )
 end
