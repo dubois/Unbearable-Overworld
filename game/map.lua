@@ -9,6 +9,18 @@ local MAP_X, MAP_Y = 63, 48     -- about 1.75x
 
 local Ob = {}
 
+local b = string.byte
+
+-- 1 tile = 1 world unit = is 80 px
+local sheet_map = tps.load_sheet('art/sheet_map.lua', 1/79.9)
+
+local LOOKUP_OBJ = {
+    [b'A'] = { 'sheet', sheet_map, 'obj/rock_a_1x1' },
+    [b't'] = { 'sheet', sheet_map, 'obj/tree_a_1x1' },
+    [b'.'] = { 'sheet', sheet_map, 'bg/grass_1' },
+    -- for just loading random textures
+    -- [b'A'] = { 'txtr',  'art/tree_a.png', 1/80 },
+}
 
 -- Return a function that moves the map camera by dx and dy every frame
 -- until the key that triggered the mover is released.
@@ -17,16 +29,13 @@ local s_move_actions = {}
 function Ob:make_mover(dx,dy)
 	local function move_infinitely()
 		while true do
-            print('moving',dx,dy)
 			g_map_layer.camera:addLoc(dx/10, dy/10)
-            print(g_map_layer.camera:getLoc())
 			coroutine.yield()
 		end
 	end
 
 	local function start_or_stop_mover(key,down)
 		-- always stop, just in case the calls aren't properly paired
-        print('moving',key,down)
 		if s_move_actions[key] then
 			s_move_actions[key]:stop()
 			s_move_actions[key] = nil
@@ -42,8 +51,29 @@ end
 
 function Ob:_make_map_base(tx, ty, desc)
 	if not desc then return end
-    local prop = MOAIProp2D.new()
-    prop:setDeck(desc)
+    local prop
+    if desc[1] == 'sheet' then
+        local sheet, sprite, scale = desc[2], desc[3], desc[4]
+        local bg_prop
+        if sprite == 'bg/grass_1' then
+            -- grass gets randomized
+            if math.random() < 0.5 then sprite = 'bg/grass_2' end
+        else
+            -- non-grass gets a backdrop
+            bg_prop = sheet:make('bg/grass_1', scale)
+        end
+        prop = sheet:make(sprite, scale)
+        if bg_prop then
+            bg_prop:setParent(prop)
+            g_map_layer:insertProp(bg_prop)
+        end
+        
+    elseif desc[1] == 'txtr' then
+        -- texture name, scale
+        local txtr_name, scale = desc[2], desc[3]
+        prop = MOAIProp2D.new()
+        prop:setDeck(tps.load_single(txtr_name, scale))
+    end
     prop:setLoc(tx, ty)
     g_map_layer:insertProp(prop)
     return prop
@@ -52,19 +82,11 @@ end
 function Ob:_read_map(filename)
 	local function reversed(array)
 		local new = {}
-		print('len',#array)
 		for i,k in ipairs(array) do
 			new[(#array)-i+1] = k
 		end
 		return new
 	end
-
-	local byte = string.byte
-	local lookup_obj = {
-		[byte('A')] = tps.load_single('art/rock_a.png', 1/80),
-		[byte('t')] = tps.load_single('art/tree_a.png', 1/80),
-		[byte('.')] = tps.load_single('art/grass_1.png',1/80),
-	}
 
 	local grid = {}
 
@@ -78,7 +100,7 @@ function Ob:_read_map(filename)
 		ty = ty + 1
 		grid[ty] = {}
 		for tx=1,string.len(line) do
-			local desc = lookup_obj[string.byte(line, tx)]
+			local desc = LOOKUP_OBJ[string.byte(line, tx)]
 			local prop = self:_make_map_base(tx,ty, desc)
 			grid[ty][tx] = prop
 		end

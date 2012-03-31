@@ -93,7 +93,7 @@ function t.load_sheet(lua, sheet_scale)
     function deck:setup(prop, sprite)
         prop:setDeck(self)
         local idx = self.names[sprite]
-        if not sprite then
+        if not idx then
             print("WARN: missing sprite "..sprite)
         else
             prop:setIndex(idx)
