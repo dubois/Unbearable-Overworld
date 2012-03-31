@@ -130,6 +130,9 @@ function main()
     g_map = require 'map'
     g_map:init()
 
+    g_bear = require 'bear'
+    g_bear:init()
+
     -- simple cycle through viewport states, for testing
 	g_input.keymap.p = function(key,down)
         if down then
