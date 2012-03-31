@@ -1,7 +1,7 @@
 -- I AM A FRIENDLY BEAR
 
-local BEAR_FORCE = 20
-local BEAR_DAMPING = 1.7
+local BEAR_FORCE = 70
+local BEAR_DAMPING = 7
 
 local Ob = {}
 Ob.move_actions = {}
