@@ -33,7 +33,7 @@ function Blood._updateSquirtThread(squirt)
 
         squirt.timeLived = squirt.timeLived + deltaTime
         if squirt.timeLived > totalLife then
-            print("Done!")
+            --print("Done!")
             break
         end
 

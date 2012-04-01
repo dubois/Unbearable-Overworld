@@ -45,4 +45,11 @@ function randVec(size)
     return x,y
 end
 
+function angleToVec(angle)
+    local rads = math.rad(angle)
+    local x = math.sin(rads)
+    local y = math.cos(rads)
+    return x,y
+end
+
 return Util

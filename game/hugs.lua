@@ -35,7 +35,7 @@ function Hugs.init(viewport)
     Hugs.pawDeck = makeDeck('hugs/LeftPaw')
 
     Hugs.cityProp = makeProp(Hugs.cityDeck, layer, 1024, 768, 0)
-    Hugs.person = HugPerson.new('AnnaKipnis', layer)
+    --Hugs.person = HugPerson.new('AnnaKipnis', layer)
     Hugs.leftPaw = makeProp(Hugs.pawDeck, layer, 1024, 512, 1)
     Hugs.leftPaw:setLoc(-400,0)
     Hugs.rightPaw = makeProp(Hugs.pawDeck, layer, -1024, 512, 1)

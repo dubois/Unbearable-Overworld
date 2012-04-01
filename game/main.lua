@@ -80,7 +80,6 @@ end
 local function init_render()
 
     Hugs = require("hugs")
-    Npc = require("npc")
 
 	-- Set up quadrants
 	-- nb: It's setSize(x0,y0,x1,y1), not setSize(x0,y0,w,h)
@@ -148,10 +147,6 @@ local function init_render()
     MOAISim.pushRenderPass ( g_char_layer )
     MOAISim.pushRenderPass ( b2d_layer )
 
-    Npc.init(world, g_char_layer, -2)
-    Npc.makeNPC('AnnaKipnis', 5, 5)
-    Npc.makeNPC('ChrisJurney', 6, 6)
-
     Music.init()
     Music.setSong('hug')
 end
@@ -210,6 +205,13 @@ function main()
 
     g_bear = require 'bear'
     g_bear:init()
+
+    Npc = require("npc")
+
+    Hugs.person = HugPerson.new('AnnaKipnis', Hugs.layer)
+
+    Npc.init(world, g_char_layer, -2)
+
 
     if ATTACH_CAMERA_TO_BEAR then
         g_map_layer.camera:setParent ( g_bear.body )
