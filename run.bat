@@ -1,2 +1,2 @@
 @cd game
-..\moai-untzd.exe config.lua main.lua
+..\moai-untz.exe config.lua main.lua
