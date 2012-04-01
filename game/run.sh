@@ -1,1 +1,0 @@
-../moai config.lua hugs.lua
