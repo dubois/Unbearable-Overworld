@@ -14,42 +14,78 @@ local ANIM_DESCS = {
     --     rate = <frames per second>,  -- optional; defaults to 2
     -- }
 
-    idle_fwd = {
-        -- these are very different sizes than the other frames
-        -- frames = { 'bear_standing', 'bear_standing1' },
-        -- frames = { 'bear_walking1' },
-        frames = { 'bear_standing_front_readytohug' },
-        rate = 2,
+    idle_f     = { 'bear_standing_front' },
+    idle_f_h   = { 'bear_standing_front_readytohug' },
+    idle_b     = { 'bear_standing_back', },
+    idle_b_h   = { 'bear_standing_back_readytohug', },
+    idle_l     = { 'bear_standing_left', },
+    idle_l_h   = { 'bear_standing_left_readytohug', },
+    idle_r     = { 'bear_standing_right', },
+    idle_r_h   = { 'bear_standing_right_readytohug', },
+
+    walk_f     = { 'bear_walking1',
+                   'bear_standing_front',
+                   'bear_walking2',
+                   'bear_standing_front',
     },
-    idle_back = {
-        frames = { 'bear_standing_back' },
+    walk_f_h   = { 'bear_walking1_readytohug',
+                   'bear_standing_front_readytohug',
+                   'bear_walking2_readytohug',
+                   'bear_standing_front_readytohug',
     },
-    walk_right = {
-        frames = {
-            'bear_walking_side1',
-            'bear_standing_side',
-            'bear_walking_side2',
-            'bear_standing_side',
-        },
+
+    walk_b     = { 'bear_walking_back1',
+                   'bear_standing_back',
+                   'bear_walking_back2',
+                   'bear_standing_back',
     },
-    -- no walk left frames
-    walk_left = {
-        frames = {  'bear_walking1', 'bear_walking2' },
+    walk_b_h   = { 'bear_walking_back1_readytohug',
+                   'bear_standing_back_readytohug',
+                   'bear_walking_back2_readytohug',
+                   'bear_standing_back_readytohug',
     },
-    walk_fwd = {
-        frames = { 'bear_walking1', 'bear_walking2' },
+
+    walk_l     = { 'bear_walking_left1',
+                   'bear_standing_left',
+                   'bear_walking_left2',
+                   'bear_standing_left',
     },
-    walk_back = {
-        frames = { 'bear_walking_back1', 'bear_walking_back2' },
-    }
+    walk_l_h   = { 'bear_walking_left1_readytohug',
+                   'bear_standing_left_readytohug',
+                   'bear_walking_left2_readytohug',
+                   'bear_standing_left_readytohug',
+    },
+
+    walk_r     = { 'bear_walking_right1',
+                   'bear_standing_right',
+                   'bear_walking_right2',
+                   'bear_standing_right',
+    },
+    walk_r_h   = { 'bear_walking_right1_readytohug',
+                   'bear_standing_right_readytohug',
+                   'bear_walking_right2_readytohug',
+                   'bear_standing_right_readytohug',
+    },
+
 }
 
 local Ob = {}
 Ob.move_actions = {}
+Ob.test__ready_to_hug = true
+
+function Ob:setLoc(x,y)
+    self.body:setTransform(x,y, 0)
+end
+
+function Ob:is_ready_to_hug()
+    -- shitty text implementation
+    return self.test__ready_to_hug
+end
 
 function Ob:init()
     local body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
-    body:addRect ( 0,0, 2-0.1, 2-0.1 )
+    -- body:addRect ( 0,0, 2-0.1, 2-0.1 )
+    body:addCircle(0,1, 1-0.1)
     body:setTransform ( 10, 10 )
     body:setFixedRotation ( true )
     body:setMassData ( 1 )
@@ -58,6 +94,7 @@ function Ob:init()
 
     local prop = SHEET_BEAR:make('bear_walking1')
     prop:setParent(self.body)
+    prop:setLoc(-1,0)
     g_map_layer:insertProp(prop)
     self.prop = prop
 
@@ -66,67 +103,90 @@ function Ob:init()
 	g_input.keymap.s = self:make_mover(0,-1)
 	g_input.keymap.d = self:make_mover(1,0)
 
+	g_input.keymap.W = self:make_mover(0,1)
+	g_input.keymap.A = self:make_mover(-1,0)
+	g_input.keymap.S = self:make_mover(0,-1)
+	g_input.keymap.D = self:make_mover(1,0)
+
+
     self.anims = animlib.make_anims(self.prop, ANIM_DESCS, SHEET_BEAR)
 
     self.ticker = MOAICoroutine:new()
     self.ticker:run(self.on_tick, self)
 
-    -- debug keybindings for tuning
-    g_input.keymap.t = function(k,d)
-        if d then
-            BEAR_FORCE = BEAR_FORCE * 1.05
-            print('force is now',BEAR_FORCE)
-        end
-    end
-    g_input.keymap.g = function(k,d)
-        if d then
-            BEAR_FORCE = BEAR_FORCE / 1.05
-            print('force is now',BEAR_FORCE)
-        end
+    if true then
+        -- debug keybinds for testing anims
+        g_input.keymap.t = function(k,d) if d then
+            self.test__ready_to_hug = not self.test__ready_to_hug
+        end end
     end
 
-    g_input.keymap.y = function(k,d)
-        if d then
-            BEAR_DAMPING = BEAR_DAMPING * 1.05
-            self.body:setLinearDamping(BEAR_DAMPING)
-            print('damp is now',BEAR_DAMPING)
+    if false then
+        -- debug keybindings for tuning
+        g_input.keymap.t = function(k,d)
+            if d then
+                BEAR_FORCE = BEAR_FORCE * 1.05
+                print('force is now',BEAR_FORCE)
+            end
         end
-    end
-    g_input.keymap.h = function(k,d)
-        if d then
-            BEAR_DAMPING = BEAR_DAMPING / 1.05
-            self.body:setLinearDamping(BEAR_DAMPING)
-            print('damp is now',BEAR_DAMPING)
+        g_input.keymap.g = function(k,d)
+            if d then
+                BEAR_FORCE = BEAR_FORCE / 1.05
+                print('force is now',BEAR_FORCE)
+            end
+        end
+
+        g_input.keymap.y = function(k,d)
+            if d then
+                BEAR_DAMPING = BEAR_DAMPING * 1.05
+                self.body:setLinearDamping(BEAR_DAMPING)
+                print('damp is now',BEAR_DAMPING)
+            end
+        end
+        g_input.keymap.h = function(k,d)
+            if d then
+                BEAR_DAMPING = BEAR_DAMPING / 1.05
+                self.body:setLinearDamping(BEAR_DAMPING)
+                print('damp is now',BEAR_DAMPING)
+            end
         end
     end
 end
 
+Ob._last_direction = '_f'
 function Ob:_get_desired_anim()
     local x,y = self.body:getLinearVelocity ()
     local vel = math.sqrt(x*x + y*y)
+
+    -- what facing?
+    local direction = nil
     if vel < 0.1 then
-        return self._current_anim
-    elseif vel < 0.2 then
-        if y > 0 then
-            return self.anims['idle_back']
-        else
-            return self.anims['idle_fwd']
-        end
+        direction = self._last_direction
+    elseif math.abs(x) > math.abs(y) then
+        direction = (x > 0) and '_r' or '_l'
     else
-        if math.abs(x) > math.abs(y) then
-            if x > 0 then
-                return self.anims['walk_right']
-            else
-                return self.anims['walk_left']
-            end
-        else
-            if y > 0 then
-                return self.anims['walk_back']
-            else
-                return self.anims['walk_fwd']
-            end
-        end
+        direction = (y > 0) and '_b' or '_f'
     end
+    self._last_direction = direction
+
+    local name
+    if vel < 0.2 then
+        name = 'idle' .. direction
+    else
+        name = 'walk' .. direction
+    end
+
+    if self:is_ready_to_hug() then
+        -- try the hug anim
+        local try = self.anims[name .. '_h']
+        if try then return try end
+    end
+
+    local try = self.anims[name]
+    if try then return try end
+
+    print(string.format('WARN: Canot find anim %s', try))
+    return self.anims['idle_f']
 end
 
 -- Runs every tick!
