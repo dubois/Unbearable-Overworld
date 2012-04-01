@@ -1,4 +1,4 @@
-local Ob = {}
+local Ob = { keyPressed = false }
 
 Ob.keymap = {}
 
@@ -9,6 +9,8 @@ function Ob:init()
 		local function on_keyboard(key, down)
 			local cb = self.keymap[string.char(key)]
 			if cb then cb(key,down) end
+            print("k: "..key)
+            Ob.keyPressed = true
 		end
 		MOAIInputMgr.device.keyboard:setCallback(on_keyboard)
 	end

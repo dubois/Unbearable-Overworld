@@ -5,23 +5,16 @@
 -- https://twitter.com/#!/petermolydeux/status/94102529461334017
 
 local tps = require 'tps'
+local util = require 'util'
 
 local WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
 local ATTACH_CAMERA_TO_BEAR = true
 
--- ----------------------------------------------------------------------
--- Rendering, viewport management
--- ----------------------------------------------------------------------
-
-local function init_render()
+local function init_early()
     MOAISim.openWindow ( "Unbearable", WIN_X, WIN_Y )
-
     MOAIUntzSystem.initialize ()
-
-    Music = require("music")
-    Hugs = require("hugs")
 
     time = MOAISim.getElapsedTime()
     deltaTime = 0
@@ -37,6 +30,49 @@ local function init_render()
             end
         end
     )
+
+    -- Should come before map init
+    g_input = require 'input'
+    g_input:init()
+
+    Music = require("music")
+
+end
+
+local function do_splash()
+    init_early()
+
+    local viewport = MOAIViewport.new ()
+    viewport:setSize ( WIN_X, WIN_Y )
+    viewport:setScale ( WIN_X, WIN_Y )
+
+    local layer = MOAILayer2D.new ()
+    layer:setViewport ( viewport )
+
+    MOAISim.pushRenderPass(layer)
+
+    local deck = makeDeck('splash')
+    local prop = makeProp(deck, layer, 1024, 768, 1)
+
+    local thread = MOAICoroutine.new()
+    thread:run(function()
+        while not g_input.keyPressed do
+            coroutine.yield()
+        end
+        MOAISim.popRenderPass()
+        main()
+    end )
+end
+
+
+
+-- ----------------------------------------------------------------------
+-- Rendering, viewport management
+-- ----------------------------------------------------------------------
+
+local function init_render()
+
+    Hugs = require("hugs")
 
 	-- Set up quadrants
 	-- nb: It's setSize(x0,y0,x1,y1), not setSize(x0,y0,w,h)
@@ -150,10 +186,6 @@ function main()
     init_render()
 	init_test()
 
-	-- Should come before map init
-	g_input = require 'input'
-	g_input:init()
-
     g_map = require 'map'
     g_map:init()
 
@@ -177,4 +209,4 @@ function main()
     end
 end
 
-main()
+do_splash()
