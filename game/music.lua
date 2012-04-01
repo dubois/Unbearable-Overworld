@@ -17,9 +17,13 @@ Music = {
     }
 }
 
+if DISABLE_MUSIC then
+    Music.songLib = {}
+end
+
 function _setupSong(songName)
     local song = MOAIUntzSound.new()
-    print (Music.soundPath .. songName)
+    print ('loading', Music.soundPath .. songName)
     song:load(Music.soundPath .. songName)
     song:setVolume(0)
     song:setLooping(true)
