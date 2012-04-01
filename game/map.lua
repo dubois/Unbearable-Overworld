@@ -161,6 +161,18 @@ function Ob:_create_collision(layer, collision_layer)
     end
 end
 
+function Ob:query_collision(x,y)
+    local layer = self.tiled_layers[4]
+    local index = (layer.height - y) * layer.width + x
+    local data = layer.data[index]
+    return data
+end
+
+function Ob:get_bounds()
+    local layer = self.tiled_layers[4]
+    return layer.width, layer.height
+end
+
 function Ob:init()
 	-- self.rows = self:_read_map('levels/1.txt')
 

@@ -27,6 +27,17 @@ end
 
 _makeNPCDef('ChrisJurney')
 _makeNPCDef('AnnaKipnis')
+_makeNPCDef('adam')
+_makeNPCDef('benmj')
+_makeNPCDef('chrisremo')
+_makeNPCDef('christianmalone')
+_makeNPCDef('davidburns')
+_makeNPCDef('deantate')
+_makeNPCDef('deniserockwell')
+_makeNPCDef('elizabeth')
+_makeNPCDef('garydootan')
+_makeNPCDef('GavinFitzgerald')
+_makeNPCDef('WhitneyHills')
 
 function Npc.calcNewDir()
     if math.random(0,1) < 0.3 then
@@ -107,13 +118,36 @@ function Npc.makeNPC(name, x, y)
     table.insert(Npc.npcs, npc)
 end
 
+function Npc.makeNpcs()
+    local bx, by = g_map:get_bounds()
+
+    print('bounds: '..bx..' '..by)
+
+    for key, npcDef in pairs(Npc.npcDefs) do
+        local insideCollision = 1
+        local x = 0
+        local y = 0
+
+        while insideCollision~=0 do
+            print ("name "..key)
+            x = math.floor(math.random(1, bx - 1))
+            y = math.floor(math.random(1, by - 1))
+            
+            insideCollision = g_map:query_collision(x,y)
+
+            print("name "..key.." tx "..x.." ty "..y.." coll "..insideCollision)
+        end
+
+        Npc.makeNPC(key, x, y)
+    end
+end
+
 function Npc.init(world, layer, basePriority)
     Npc.world = world
     Npc.layer = layer
     Npc.basePriority = basePriority
 
-    Npc.makeNPC('AnnaKipnis', 10, 5)
-    Npc.makeNPC('ChrisJurney', 6, 6)
+    Npc.makeNpcs()
 end
 
 
