@@ -16,15 +16,21 @@ local ANIM_DESCS = {
 
     idle_fwd = {
         -- these are very different sizes than the other frames
-        frames = { 'bear_standing', 'bear_standing1' },
+        -- frames = { 'bear_standing', 'bear_standing1' },
         -- frames = { 'bear_walking1' },
+        frames = { 'bear_standing_front_readytohug' },
         rate = 2,
     },
     idle_back = {
         frames = { 'bear_standing_back' },
     },
     walk_right = {
-        frames = {  'bear_walking_side1', 'bear_walking_side2' },
+        frames = {
+            'bear_walking_side1',
+            'bear_standing_side',
+            'bear_walking_side2',
+            'bear_standing_side',
+        },
     },
     -- no walk left frames
     walk_left = {
