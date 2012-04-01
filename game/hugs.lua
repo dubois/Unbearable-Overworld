@@ -1,6 +1,20 @@
+Hugs = {
+    tMax = 100,
+    hugT = 0,
+    atDeltaLimit = 0.5,
+    at = 0,
+    vt = 0,
+    atRate = 0.1,
+    atLimit = 2,
+    vtLimit = 100,
 
-MOAISim.openWindow ( "Unbearable", 1024, 768 )
-MOAIUntzSystem.initialize ()
+    initUpd = 0,
+
+    pawYTop =      200,
+    pawYBottom =  -200,
+    pawXLeftMin = -800,
+    pawXLeftMax = -400,
+}
 
 deckLib = {}
 
@@ -43,128 +57,77 @@ end
 
 Blood = require("blood")
 HugPerson = require("hugperson")
-print("test3")
-
-time = MOAISim.getElapsedTime()
-deltaTime = 0
-
-music = MOAIUntzSound.new ()
-music:load ( 'Sound/bearhug.wav' )
-music:setVolume ( 1 )
-music:setLooping ( true )
-
-badMusic = MOAIUntzSound.new ()
-badMusic:load( 'Sound/bearhug_overlay.wav')
-badMusic:setLooping ( true )
-badMusic:setVolume ( 0 )
-
-music:play()
-badMusic:play()
 
 
-viewport = MOAIViewport.new ()
-viewport:setSize  ( 1024, 768 )
-viewport:setScale ( 1024, 768 )
+function Hugs.init(viewport)
+    Hugs.viewport = viewport
 
-layer = MOAILayer2D.new ()
-layer:setViewport ( viewport )
-MOAISim.pushRenderPass ( layer )
+    viewport:setScale(1024,768)
 
-cityDeck = makeDeck('city')
-personDeck = makeDeck('Chris')
-pawDeck = makeDeck('LeftPaw')
+    local layer = MOAILayer2D.new ()
+    Hugs.layer = layer
+    layer:setViewport ( viewport )
+    MOAISim.pushRenderPass ( layer )
 
-cityProp = makeProp(cityDeck, layer, 1024, 768, 0)
-person = HugPerson.new('Chris', layer)
-leftPaw = makeProp(pawDeck, layer, 1024, 512, 1)
-leftPaw:setLoc(-400,0)
-rightPaw = makeProp(pawDeck, layer, -1024, 512, 1)
-rightPaw:setLoc(400,0)
+    Hugs.cityDeck = makeDeck('city')
+    Hugs.personDeck = makeDeck('Chris')
+    Hugs.pawDeck = makeDeck('LeftPaw')
 
-tMax = 100
-hugT = 0
-atDeltaLimit = 0.5
-at = 0
-vt = 0
-atRate = 0.1
-atLimit = 2
-vtLimit = 100
+    Hugs.cityProp = makeProp(Hugs.cityDeck, layer, 1024, 768, 0)
+    Hugs.person = HugPerson.new('Chris', layer)
+    Hugs.leftPaw = makeProp(Hugs.pawDeck, layer, 1024, 512, 1)
+    Hugs.leftPaw:setLoc(-400,0)
+    Hugs.rightPaw = makeProp(Hugs.pawDeck, layer, -1024, 512, 1)
+    Hugs.rightPaw:setLoc(400,0)
+end
 
-initUpd = 0
-
-pawYTop =      200
-pawYBottom =  -200
-pawXLeftMin = -512
-pawXLeftMax = -100
 
 function calcPawPos(t)
-    local pawX = pawXLeftMin + (pawXLeftMax - pawXLeftMin) * (t / 100)
-    local pawY = pawYTop + (pawYBottom - pawYTop) * (t / 100)
+    local pawX = Hugs.pawXLeftMin + (Hugs.pawXLeftMax - Hugs.pawXLeftMin) * (t / 100)
+    local pawY = Hugs.pawYTop + (Hugs.pawYBottom - Hugs.pawYTop) * (t / 100)
     return pawX,pawY
 end
 
-function onPointerEvent ( x, y )
+function Hugs.onPointerEvent ( x, y )
+	local wx, wy = Hugs.layer:wndToWorld ( x, y )
 
-	wx, wy = layer:wndToWorld ( x, y )
-
-    --dat = (wy / 384) * atDeltaLimit
-
-    --at = at - dat * (1 / 30) * atRate
-    at = -(wy / 384) * atLimit
-
-    at = clamp(at, -atLimit, atLimit)
-
-    --print ("wy"..wy.." dat"..dat.." at"..at)
+    Hugs.at = -(wy / 384) * Hugs.atLimit
+    Hugs.at = clamp(Hugs.at, -Hugs.atLimit, Hugs.atLimit)
 end
 
-timeThread = MOAICoroutine.new()
-timeThread:run(
+Hugs.hugThread = MOAICoroutine.new()
+Hugs.hugThread:run(
     function()
-        while true do
-            local newTime = MOAISim.getElapsedTime()
-            deltaTime = newTime - time
-            time = newTime
-            coroutine.yield()
-        end
-    end
-)
-
-hugThread = MOAICoroutine.new()
-hugThread:run(
-    function()
-        local cap = 10
 
         while true do
-            vt = vt + at * deltaTime
-            vt = clamp(vt, -vtLimit, vtLimit)
+            Hugs.vt = Hugs.vt + Hugs.at * deltaTime
+            Hugs.vt = clamp(Hugs.vt, -Hugs.vtLimit, Hugs.vtLimit)
 
-            hugT = hugT + vt
+            Hugs.hugT = Hugs.hugT + Hugs.vt
             
-            if hugT > tMax then
-                hugT = tMax
-                vt = 0
-                at = 0
+            if Hugs.hugT > Hugs.tMax then
+                Hugs.hugT = Hugs.tMax
+                Hugs.vt = 0
+                Hugs.at = 0
             end
-            if hugT < 0 then
-                hugT = 0
-                vt = 0
-                at = 0
+            if Hugs.hugT < 0 then
+                Hugs.hugT = 0
+                Hugs.vt = 0
+                Hugs.at = 0
             end
 
-            pawX, pawY = calcPawPos(hugT)
+            local pawX, pawY = calcPawPos(Hugs.hugT)
 
-            leftPaw:setLoc(pawX, pawY)
-            rightPaw:setLoc(-pawX, pawY)
+            Hugs.leftPaw:setLoc(pawX, pawY)
+            Hugs.rightPaw:setLoc(-pawX, pawY)
 
-            HugPerson.updateWithPaw(person, hugT)
-
-            --print ("vx" .. vx .. " vy" .. vy .. " px" .. px .. " py" .. py)
+            HugPerson.updateWithPaw(Hugs.person, Hugs.hugT)
 
             coroutine.yield ()
         end
     end
 )
 
-MOAIInputMgr.device.pointer:setCallback ( onPointerEvent )
-onPointerEvent ( 0, 0 )
+MOAIInputMgr.device.pointer:setCallback ( Hugs.onPointerEvent )
 
+return Hugs
