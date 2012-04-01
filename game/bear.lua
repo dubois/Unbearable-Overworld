@@ -14,8 +14,21 @@ local ANIM_DESCS = {
     --     rate = <frames per second>,  -- optional; defaults to 2
     -- }
 
-    idle = {
+    idle_fwd = {
+        -- these are very different sizes than the other frames
         frames = { 'bear_standing', 'bear_standing1' },
+        -- frames = { 'bear_walking1' },
+        rate = 2,
+    },
+    idle_back = {
+        frames = { 'bear_standing_back' },
+    },
+    walk_right = {
+        frames = {  'bear_walking_side1', 'bear_walking_side2' },
+    },
+    -- no walk left frames
+    walk_left = {
+        frames = {  'bear_walking1', 'bear_walking2' },
     },
     walk_fwd = {
         frames = { 'bear_walking1', 'bear_walking2' },
@@ -37,7 +50,7 @@ function Ob:init()
     body:setLinearDamping( BEAR_DAMPING )
     self.body = body
 
-    local prop = SHEET_BEAR:make('')
+    local prop = SHEET_BEAR:make('bear_walking1')
     prop:setParent(self.body)
     g_map_layer:insertProp(prop)
     self.prop = prop
@@ -83,7 +96,31 @@ function Ob:init()
 end
 
 function Ob:_get_desired_anim()
-    return self.anims['walk_fwd']
+    local x,y = self.body:getLinearVelocity ()
+    local vel = math.sqrt(x*x + y*y)
+    if vel < 0.1 then
+        return self._current_anim
+    elseif vel < 0.2 then
+        if y > 0 then
+            return self.anims['idle_back']
+        else
+            return self.anims['idle_fwd']
+        end
+    else
+        if math.abs(x) > math.abs(y) then
+            if x > 0 then
+                return self.anims['walk_right']
+            else
+                return self.anims['walk_left']
+            end
+        else
+            if y > 0 then
+                return self.anims['walk_back']
+            else
+                return self.anims['walk_fwd']
+            end
+        end
+    end
 end
 
 -- Runs every tick!
