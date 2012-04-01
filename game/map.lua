@@ -7,6 +7,9 @@ local tps = require 'tps'
 local SCREEN_X, SCREEN_Y = 36, 27
 local MAP_X, MAP_Y = 63, 48     -- about 1.75x
 
+local COLLISION_LAYER_ALL = 1
+local COLLISION_LAYER_PEDESTRIAN = 2
+
 local Ob = {}
 
 local b = string.byte
@@ -132,8 +135,49 @@ function Ob:_read_map(filename)
 	return grid
 end
 
+function Ob:_create_layer(deck, layer)
+    for x=0,layer.width-1 do
+        for y=0,layer.height-1 do
+            local idx = layer.data[( y * layer.width ) + x + 1]
+            local prop = MOAIProp2D.new()
+            prop:setDeck(deck)
+            prop:setIndex(idx)
+            prop:setLoc(x,layer.height-y)
+            g_map_layer:insertProp(prop)
+        end
+    end
+end
+
+function Ob:_create_collision(layer, collision_layer)
+    for x=0,layer.width-1 do
+        for y=0,layer.height-1 do
+            local idx = layer.data[( y * layer.width ) + x + 1]
+            if idx ~= 0 then
+                local body = g_box2d:addBody ( MOAIBox2DBody.STATIC )
+                body:addRect(0,0,1,1)
+                body:setTransform(x, layer.height-y, 0)
+            end
+        end
+    end
+end
+
 function Ob:init()
-	self.rows = self:_read_map('levels/1.txt')
+	-- self.rows = self:_read_map('levels/1.txt')
+
+    self.tiled_deck, self.tiled_layers = tps.load_tilesheet(
+        'art/tiled_map.lua', 
+        'art/tiled_map.png' )
+
+    -- 1: background
+    -- 2: background top
+    -- 3: objects
+    -- 4: bear collisions
+    -- 5: victim collisions
+    self:_create_layer(self.tiled_deck, self.tiled_layers[1])
+    self:_create_layer(self.tiled_deck, self.tiled_layers[2])
+    self:_create_layer(self.tiled_deck, self.tiled_layers[3])
+    self:_create_collision(self.tiled_layers[4], COLLISION_LAYER_ALL)
+    self:_create_collision(self.tiled_layers[5], COLLISION_LAYER_PEDESTRIAN)
 end
 
 function Ob:setup_debug_input()
