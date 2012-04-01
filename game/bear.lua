@@ -122,7 +122,7 @@ function Ob:init()
 
     if true then
         -- debug keybinds for testing anims
-        g_input.keymap.t = function(k,d) if d then
+        g_input.keymap.r = function(k,d) if d then
             self.test__ready_to_hug = not self.test__ready_to_hug
         end end
     end
