@@ -12,8 +12,8 @@ Hugs = {
 
     pawYTop =      200,
     pawYBottom =  -200,
-    pawXLeftMin = -512,
-    pawXLeftMax = -100,
+    pawXLeftMin = -800,
+    pawXLeftMax = -400,
 }
 
 deckLib = {}
