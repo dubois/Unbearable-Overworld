@@ -78,6 +78,7 @@ end
 local function init_render()
 
     Hugs = require("hugs")
+    Npc = require("npc")
 
 	-- Set up quadrants
 	-- nb: It's setSize(x0,y0,x1,y1), not setSize(x0,y0,w,h)
@@ -133,10 +134,19 @@ local function init_render()
     b2d_layer:setCamera( g_map_layer.camera )
     b2d_layer:setBox2DWorld ( g_box2d ) 
 
+    g_char_layer = MOAILayer2D.new ()
+    g_char_layer:setViewport ( g_view_map )
+    g_char_layer:setCamera(g_map_layer.camera)
+
 	-- Render quadrants
     MOAISim.pushRenderPass ( g_bear_layer )
     MOAISim.pushRenderPass ( g_map_layer )
+    MOAISim.pushRenderPass ( g_char_layer )
     MOAISim.pushRenderPass ( b2d_layer )
+
+    Npc.init(world, g_char_layer, -2)
+    Npc.makeNPC('AnnaKipnis', 5, 5)
+    Npc.makeNPC('ChrisJurney', 6, 6)
 
     Music.init()
     Music.setSong('hug')

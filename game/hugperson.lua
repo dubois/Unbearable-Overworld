@@ -45,8 +45,8 @@ function HugPerson.MakePersonData(name)
     return personData
 end
 
-HugPerson.MakePersonData('ChrisJurney')
-HugPerson.MakePersonData('AnnaKipnis')
+--HugPerson.MakePersonData('ChrisJurney')
+--HugPerson.MakePersonData('AnnaKipnis')
 
 --[[HugPerson.personLib['Chris'] = HugPerson._makePerson('Chris', -60, 80, 90, 80, 'ScaredChris', 'HappyChris',
                                      {_makeDmgState(75, 'ow', 5, 1, 3, 'ScaredChris'),
