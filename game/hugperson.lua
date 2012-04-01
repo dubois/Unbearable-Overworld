@@ -5,7 +5,12 @@ local HugPerson = {
     minTToHug = 20,
     personLib = {},
     layer = nil,
-    maxDistanceFromBear = 100,
+    maxDistanceFromBear = 3,
+    disableRate = 1,
+
+    fromXs = {-800, -1000, 1000},
+    targetXs = { 0, -256, 256 },
+    nextTargetX = 1,
 }
 
 function HugPerson._makePerson(name, eye1x, eye1y, eye2x, eye2y, initialImage, huggedImage, damageStates)
@@ -80,7 +85,11 @@ function HugPerson.thread(person)
     local t = 0
 
     while not person.dead do
-        local t = 1 - (person.distanceFromBear / HugPerson.maxDistanceFromBear)
+        if not person.disabled then
+            t = 1 - (person.distanceFromBear / HugPerson.maxDistanceFromBear)
+        else
+            t = t - HugPerson.disableRate * deltaTime
+        end
 
         --t = t + 0.005
         t = clamp(t, 0, 1)
@@ -90,39 +99,64 @@ function HugPerson.thread(person)
         local y = 768*t
         person:setScl(x,y)
 
-        local px = 0
+        local px = person.targetX
         local py = -768*(1-t)*0.5
         if t < 0.5 then
-            px = -800 + 1600*t
+            local tt = t * 2
+            px = person.fromX + tt * (person.targetX - person.fromX)
+            --px = -800 + 1600*t
         end
         person:setLoc(px,py)
+
+        if person.disabled and t <= 0 then
+            break;
+        end
 
         coroutine.yield()
     end
 
-    threadSleep(5)
+    if person.dead then
+        threadSleep(5)
+    end
+
+    Hugs.removeHuggee(person)
+
     person.layer:removeProp(person)
 end
 
-function HugPerson.new(name, layer)
-    print("Hugging "..name)
+function HugPerson.new(name)
+    local layer = HugPerson.layer
     local personData = HugPerson.personLib[name]
     local person = makeProp(personData.initialDeck, layer, 1024, 768, HugPerson.priority)
+
     person.health = personData.healthMax
     person.layer = layer
     person.personData = personData
     person.damageStatesTriggered = {}
     person.distanceFromBear = 0
+    person.disabled = false
+    person.dead = false
+    person.targetX = HugPerson.targetXs[HugPerson.nextTargetX]
+    person.fromX = HugPerson.fromXs[HugPerson.nextTargetX]
+
+    HugPerson.nextTargetX = HugPerson.nextTargetX + 1
+    if HugPerson.nextTargetX > #HugPerson.targetXs then
+        HugPerson.nextTargetX = 1
+    end
+
     person:setColor(1,1,1,0)
     person:seekColor(1,1,1,1,1)
     person:setScl(0.1,0.1)
     person:seekScl(1024,768,3)
+
     for index, ds in ipairs(personData.damageStates) do
         person.damageStatesTriggered[index] = false
     end
 
     person.thread = MOAICoroutine.new()
     person.thread:run( HugPerson.thread, person )
+
+    Hugs.addHuggee(person)
 
     return person
 end

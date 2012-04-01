@@ -11,6 +11,8 @@ local Npc = {
 
     force = 50,
     damping = 20,
+
+    maxDistanceToGetHugged = 3,
 }
 
 
@@ -19,6 +21,7 @@ function _makeNPCDef(name)
         hugPersonData = HugPerson.MakePersonData(name),
         happyFaceDeck = makeDeck('faces/'..name..'_happy_head'),
         scaredFaceDeck = makeDeck('faces/'..name..'_scared_head'),
+        name = name,
     }
 
     print('FACE: faces/'..name..'_happy_head')
@@ -67,6 +70,29 @@ function Npc.update(npc)
         npc.prop:setPriority(-y)
         npc.head:setPriority(-y + 0.0001)
 
+        -- Check if I need to start gettin hugged
+        local bx,by = g_bear:getPos()
+        local dist = calcDistance(x,y,bx,by)
+
+        --print("dist:"..dist)
+
+        if dist < Npc.maxDistanceToGetHugged then
+            if not npc.hugPerson then
+                npc.hugPerson = HugPerson.new(npc.name)
+                npc.hugPerson.npc = npc
+            end
+
+            local t = 1.0 - dist / Npc.maxDistanceToGetHugged
+
+            --print ("t: "..t)
+
+            npc.hugPerson.distanceFromBear = dist
+
+        elseif npc.hugPerson and (dist >= Npc.maxDistanceToGetHugged) then
+            npc.hugPerson.disabled = true
+            npc.hugPerson = nil
+        end
+
         coroutine.yield()
     end
 
@@ -108,6 +134,7 @@ function Npc.makeNPC(name, x, y)
     head:setParent(node)
     head:setLoc(0,1)
 
+    npc.name = name
     npc.npcDef = npcDef
     npc.node = node
     npc.prop = prop
