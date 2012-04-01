@@ -4,6 +4,7 @@ local HugPerson = {
     minTToDamage = 35,
     minTToHug = 20,
     personLib = {},
+    layer = nil,
 }
 
 function HugPerson._makePerson(name, eye1x, eye1y, eye2x, eye2y, initialImage, huggedImage, damageStates)
@@ -21,9 +22,10 @@ function HugPerson._makePerson(name, eye1x, eye1y, eye2x, eye2y, initialImage, h
     return personData
 end
 
+
 function _makeDmgState(triggerHealth, soundName, initialSpurtCount, duration, spurtRate, image)
     local sound = MOAIUntzSound.new ()
-    sound:load ( 'Sound/'..soundName..'.wav' )
+    sound:load ( 'sound/'..soundName..'.wav' )
     sound:setVolume ( 1 )
     sound:setLooping ( false )
 
@@ -34,8 +36,7 @@ HugPerson.personLib['Chris'] = HugPerson._makePerson('Chris', -60, 80, 90, 80, '
                                      {_makeDmgState(75, 'ow', 5, 1, 3, 'ScaredChris'),
                                       _makeDmgState(50, 'ow', 5, 1, 3, 'HorrorChris'),
                                       _makeDmgState(25, 'ow', 5, 1, 3, 'HorrorChris'),
-                                      _makeDmgState(0, 'ow', 25, 3, 10, 'HorrorChris'),} )
-
+                                      _makeDmgState(0, 'ow', 25, 0, 10, 'HorrorChris'),} )
 
 
 function _doDmgState(person, ds)
@@ -53,9 +54,10 @@ function _doDmgState(person, ds)
         person:setDeck(ds.deck)
     end
 
-    Blood.squirt(pd.eye1x, pd.eye1y, ds.initialSpurtCount, ds.spurtRate, ds.duration, layer)
-    Blood.squirt(pd.eye2x, pd.eye2y, ds.initialSpurtCount, ds.spurtRate, ds.duration, layer)
+    Blood.squirt(pd.eye1x, pd.eye1y, ds.initialSpurtCount, ds.spurtRate, ds.duration, person.layer)
+    Blood.squirt(pd.eye2x, pd.eye2y, ds.initialSpurtCount, ds.spurtRate, ds.duration, person.layer)
 end
+
 
 function HugPerson.new(name, layer)
     print("name "..name)
@@ -108,8 +110,7 @@ function HugPerson.damage(person, damage)
     end
 
     local badVolume = (person.personData.healthMax - person.health) / person.personData.healthMax
-    print ("bv "..badVolume)
-    badMusic:setVolume( badVolume )
+    Music.setBadness(badVolume)
 end
 
 
@@ -119,6 +120,5 @@ function HugPerson.die(person)
     person:seekRot(30, 3)
     person.dead = true
 end
-
 
 return HugPerson

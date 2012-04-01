@@ -6,7 +6,7 @@
 
 local tps = require 'tps'
 
-local WIN_X, WIN_Y = 1280, 1024
+local WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
 local ATTACH_CAMERA_TO_BEAR = true
@@ -17,6 +17,26 @@ local ATTACH_CAMERA_TO_BEAR = true
 
 local function init_render()
     MOAISim.openWindow ( "Unbearable", WIN_X, WIN_Y )
+
+    MOAIUntzSystem.initialize ()
+
+    Music = require("music")
+    Hugs = require("hugs")
+
+    time = MOAISim.getElapsedTime()
+    deltaTime = 0
+
+    timeThread = MOAICoroutine.new()
+    timeThread:run(
+        function()
+            while true do
+                local newTime = MOAISim.getElapsedTime()
+                deltaTime = newTime - time
+                time = newTime
+                coroutine.yield()
+            end
+        end
+    )
 
 	-- Set up quadrants
 	-- nb: It's setSize(x0,y0,x1,y1), not setSize(x0,y0,w,h)
@@ -42,12 +62,15 @@ local function init_render()
 	--
 	-- "bear hug" minigame
 	--
+    g_view_hug = MOAIViewport.new()
+    g_view_hug:setSize( WIN_X/2, WIN_Y/2, WIN_X, WIN_Y )
+    Hugs.init(g_view_hug)
 
     -- Bear viewport is standard 1 pixel = 1 unit
     -- It only contains g_bear_layer
 	g_view_bear = MOAIViewport.new ()
-	g_view_bear:setSize ( WIN_X/2, 0, WIN_X, WIN_Y )
-	g_view_bear:setScale ( WIN_X/2, WIN_Y )
+	g_view_bear:setSize ( WIN_X/2, 0, WIN_X, WIN_Y/2 )
+	g_view_bear:setScale ( WIN_X/2, WIN_Y/2 )
 
 	g_bear_layer = MOAILayer2D.new ()
 	g_bear_layer:setViewport ( g_view_bear )
@@ -73,6 +96,9 @@ local function init_render()
     MOAISim.pushRenderPass ( g_bear_layer )
     MOAISim.pushRenderPass ( g_map_layer )
     MOAISim.pushRenderPass ( b2d_layer )
+
+    Music.init()
+    Music.setSong('hug')
 end
 
 -- Moves the viewports around
