@@ -76,6 +76,9 @@ Ob.test__ready_to_hug = true
 function Ob:setLoc(x,y)
     self.body:setTransform(x,y, 0)
 end
+function Ob:getLoc()
+    return self.body:getPosition()
+end
 
 function Ob:is_ready_to_hug()
     -- shitty text implementation
@@ -83,6 +86,9 @@ function Ob:is_ready_to_hug()
 end
 
 function Ob:init()
+    self.emotion = require 'emotion'
+    self.emotion:init()
+
     local body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
     -- body:addRect ( 0,0, 2-0.1, 2-0.1 )
     body:addCircle(0,1, 1-0.1)
@@ -116,7 +122,7 @@ function Ob:init()
 
     if true then
         -- debug keybinds for testing anims
-        g_input.keymap.t = function(k,d) if d then
+        g_input.keymap.r = function(k,d) if d then
             self.test__ready_to_hug = not self.test__ready_to_hug
         end end
     end
@@ -190,6 +196,7 @@ function Ob:_get_desired_anim()
 end
 
 -- Runs every tick!
+
 function Ob:on_tick()
     while true do
         -- Re-evaluate anims, switching if desired

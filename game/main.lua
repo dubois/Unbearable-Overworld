@@ -16,7 +16,7 @@ local ENABLE_SPLASH = false
 local ATTACH_CAMERA_TO_BEAR = true
 
 local function init_early()
-    MOAISim.openWindow ( "Unbearable", WIN_X, WIN_Y )
+    MOAISim.openWindow ( "https://twitter.com/#!/petermolydeux/status/94102529461334017", WIN_X, WIN_Y )
     MOAIUntzSystem.initialize ()
 
     time = MOAISim.getElapsedTime()
@@ -109,16 +109,18 @@ local function init_render()
     g_view_hug:setSize( WIN_X/2, WIN_Y/2, WIN_X, WIN_Y )
     Hugs.init(g_view_hug, g_map_layer)
 
-    -- Bear viewport is standard 1 pixel = 1 unit
-    -- It only contains g_bear_layer
+    -- Bear Emotion viewport is standard 1 pixel = 1 unit
+    -- It only contains g_bearemo_layer
 	g_view_bear = MOAIViewport.new ()
 	g_view_bear:setSize ( WIN_X/2, 0, WIN_X, WIN_Y/2 )
-	g_view_bear:setScale ( WIN_X/2, WIN_Y/2 )
+	g_view_bear:setScale ( 1024, 768 )
+    -- origin in lower-left
+    g_view_bear:setOffset(-1,-1)
 
-	g_bear_layer = MOAILayer2D.new ()
-	g_bear_layer:setViewport ( g_view_bear )
-	g_bear_layer.camera = MOAICamera2D:new ()
-	g_bear_layer:setCamera(g_bear_layer.camera)
+	g_bearemo_layer = MOAILayer2D.new ()
+	g_bearemo_layer:setViewport ( g_view_bear )
+	g_bearemo_layer.camera = MOAICamera2D:new ()
+	g_bearemo_layer:setCamera(g_bearemo_layer.camera)
 
     -- physics
 
@@ -140,7 +142,7 @@ local function init_render()
     g_char_layer:setCamera(g_map_layer.camera)
 
 	-- Render quadrants
-    MOAISim.pushRenderPass ( g_bear_layer )
+    MOAISim.pushRenderPass ( g_bearemo_layer )
     MOAISim.pushRenderPass ( g_map_layer )
     MOAISim.pushRenderPass ( g_char_layer )
     MOAISim.pushRenderPass ( b2d_layer )
@@ -173,25 +175,25 @@ function init_test()
     local sheet_test = tps.load_sheet ( 'art/sheet_out.lua' )
     local sheet_map = tps.load_sheet ( 'art/sheet_map.lua',  0.5 )
 
-    local prop = sheet_map:make('bg/grass_1')
-    prop:setLoc(100,-100)
-    g_bear_layer:insertProp(prop)
+    -- local prop = sheet_map:make('bg/grass_1')
+    -- prop:setLoc(100,-100)
+    -- g_bearemo_layer:insertProp(prop)
 
-    local prop = sheet_map:make('bg/grass_2', 2)
-    prop:setLoc(130,-130)
-    g_bear_layer:insertProp(prop)
+    -- local prop = sheet_map:make('bg/grass_2', 2)
+    -- prop:setLoc(130,-130)
+    -- g_bearemo_layer:insertProp(prop)
 
-    local prop = sheet_test:make('cathead')
-    prop:setLoc ( -100, -100 )
-    g_bear_layer:insertProp ( prop )
+    -- local prop = sheet_test:make('cathead')
+    -- prop:setLoc ( -100, -100 )
+    -- g_bearemo_layer:insertProp ( prop )
 
-    local prop = sheet_test:make('two')
-    prop:setLoc ( 0, 0 )
-    g_bear_layer:insertProp ( prop )
+    -- local prop = sheet_test:make('two')
+    -- prop:setLoc ( 0, 0 )
+    -- g_bearemo_layer:insertProp ( prop )
 
-    local prop = sheet_test:make('one')
-    prop:setLoc ( 100, 100 )
-    g_bear_layer:insertProp ( prop )
+    -- local prop = sheet_test:make('one')
+    -- prop:setLoc ( 100, 100 )
+    -- g_bearemo_layer:insertProp ( prop )
 end
 
 function main()
