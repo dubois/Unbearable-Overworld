@@ -51,7 +51,7 @@ local function do_splash()
 
     MOAISim.pushRenderPass(layer)
 
-    local deck = makeDeck('splash')
+    local deck = makeDeck('hugs/splash')
     local prop = makeProp(deck, layer, 1024, 768, 1)
 
     local thread = MOAICoroutine.new()

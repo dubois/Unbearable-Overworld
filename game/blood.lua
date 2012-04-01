@@ -7,7 +7,7 @@ Blood = {
     dropSize = 64,
 }
 
-Blood.deck = makeDeck('blood')
+Blood.deck = makeDeck('hugs/blood')
 
 function Blood._makeDrop(parent)
     local drop = makeProp(Blood.deck, squirt.layer, Blood.dropSize, Blood.dropSize, Blood.priority)

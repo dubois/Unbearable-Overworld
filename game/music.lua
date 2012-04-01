@@ -5,13 +5,13 @@ Music = {
     badness = 0,
     songLib = {
         hug = {
-            goodName = 'bearhug.wav',
-            badName = 'bearhug_overlay.wav',
+            goodName = 'bearhug.mp3',
+            badName = 'bearhug_overlay.mp3',
             badOverlay = true,
         },
         map = {
-            goodName = 'overworld_light.wav',
-            badName = 'overworld_dark.wav',
+            goodName = 'overworld_light.mp3',
+            badName = 'overworld_dark.mp3',
             badOverlay = false,
         },
     }
