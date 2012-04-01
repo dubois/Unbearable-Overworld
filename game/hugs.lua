@@ -21,8 +21,9 @@ Blood = require("blood")
 HugPerson = require("hugperson")
 
 
-function Hugs.init(viewport)
+function Hugs.init(viewport, uilayer)
     Hugs.viewport = viewport
+    Hugs.uilayer = uilayer
 
     viewport:setScale(1024,768)
 
@@ -50,7 +51,10 @@ function calcPawPos(t)
 end
 
 function Hugs.onPointerEvent ( x, y )
-	local wx, wy = Hugs.layer:wndToWorld ( x, y )
+    local wy = WIN_Y - y - WIN_Y/2
+	--local wx, wy = Hugs.uilayer:wndToWorld ( x, y )
+
+    print(" wy"..wy.." y"..y)
 
     Hugs.at = -(wy / 384) * Hugs.atLimit
     Hugs.at = clamp(Hugs.at, -Hugs.atLimit, Hugs.atLimit)

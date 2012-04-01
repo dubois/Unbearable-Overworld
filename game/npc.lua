@@ -72,11 +72,11 @@ function Npc.update(npc)
 
     -- switch to corpse
     local eyes = makeProp(Npc.eyesDeck, Npc.layer, 1, 1, Npc.basePriority + 2)
-    eyes:setParent(prop)
+    eyes:setParent(node)
     eyes:setLoc(0,0.75)
     npc.eyes = eyes
 
-    npc.prop:seekRot(-90,2)
+    npc.node:seekRot(-90,2)
 end
 
 -- npc is the body, .prop is the prop
@@ -95,15 +95,21 @@ function Npc.makeNPC(name, x, y)
     npc:setMassData ( 1 )
     npc:setLinearDamping( Npc.damping )
 
+    local node = MOAIProp2D.new()
+    node:setParent(npc)
+    node:setPiv(0,-0.25)
+
     local prop = makeProp(Npc.npcScaredDeck, Npc.layer, 2, 2, Npc.basePriority)
-    prop:setParent(npc)
-    prop:setPiv(0,-0.25)
+    prop:setParent(node)
+    prop:setLoc(0,0.5)
+    prop:setColor(math.random(0.2,1),math.random(0.2,1),math.random(0.2,1),1)
 
     local head = makeProp(npcDef.happyFaceDeck, Npc.layer, 1, 1, Npc.basePriority + 1)
-    head:setParent(prop)
-    head:setLoc(0,0.5)
+    head:setParent(node)
+    head:setLoc(0,1)
 
     npc.npcDef = npcDef
+    npc.node = node
     npc.prop = prop
     npc.head = head
     npc.health = 100
