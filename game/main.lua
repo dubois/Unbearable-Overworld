@@ -7,7 +7,7 @@
 local tps = require 'tps'
 local util = require 'util'
 
-local WIN_X, WIN_Y = 1024, 768
+WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
 DISABLE_MUSIC = true
@@ -107,7 +107,7 @@ local function init_render()
 	--
     g_view_hug = MOAIViewport.new()
     g_view_hug:setSize( WIN_X/2, WIN_Y/2, WIN_X, WIN_Y )
-    Hugs.init(g_view_hug)
+    Hugs.init(g_view_hug, g_map_layer)
 
     -- Bear viewport is standard 1 pixel = 1 unit
     -- It only contains g_bear_layer
