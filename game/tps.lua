@@ -43,12 +43,16 @@ end
 -- Pass:
 --   lua        .lua output from texturepacker
 --   scale      scale to bake into all sprites created from sheet
+--   xsize      If passed, scale down so all sprites have this x size
 --
 -- Returns an object with a :make(sprite_name [,scale)] method
 -- make() returns a MOAIProp2D.
 --
-function t.load_sheet(lua, sheet_scale)
-    if not sheet_scale then sheet_scale = 1 end
+function t.load_sheet(lua, sheet_scale, xsize)
+    if not sheet_scale then
+        sheet_scale = 1
+    end
+
     local sheet = dofile ( lua )
     local frames = sheet.frames
 
@@ -80,6 +84,14 @@ function t.load_sheet(lua, sheet_scale)
         -- to frame.geomRect.  Origin is at x0,y0 of original sprite
         local cr = frame.spriteColorRect
         local r = {}
+        if xsize ~= nil then
+            if frame.spriteSourceSize.width then
+                sheet_scale = xsize / frame.spriteSourceSize.width
+            else
+                sheet_scale = 1
+            end
+        end
+
         r.x0 = sheet_scale * ( cr.x             )
         r.y0 = sheet_scale * ( cr.y             )
         r.x1 = sheet_scale * ( cr.x + cr.width  )

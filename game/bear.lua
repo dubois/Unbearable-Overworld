@@ -3,17 +3,25 @@
 local BEAR_FORCE = 70
 local BEAR_DAMPING = 7
 
+local tps = require 'tps'
+local sheet_bear = tps.load_sheet('art/sheet_bear.lua', nil, 2)
+
 local Ob = {}
 Ob.move_actions = {}
 
 function Ob:init()
-    body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
-    body:addRect ( 0,0, 2-0.1, 3-0.1 )
+    local body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
+    body:addRect ( 0,0, 2-0.1, 1-0.1 )
     body:setTransform ( 10, 10 )
     body:setFixedRotation ( true )
     body:setMassData ( 1 )
     body:setLinearDamping( BEAR_DAMPING )
     self.body = body
+
+    local prop = sheet_bear:make('')
+    prop:setParent(self.body)
+    g_map_layer:insertProp(prop)
+    self.prop = prop
 
 	g_input.keymap.w = self:make_mover(0,1)
 	g_input.keymap.a = self:make_mover(-1,0)
