@@ -10,6 +10,7 @@ local util = require 'util'
 local WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
+local ENABLE_SPLASH = true
 local ATTACH_CAMERA_TO_BEAR = true
 
 local function init_early()
@@ -41,6 +42,10 @@ end
 
 local function do_splash()
     init_early()
+    if not ENABLE_SPLASH then
+        main()
+        return
+    end
 
     local viewport = MOAIViewport.new ()
     viewport:setSize ( WIN_X, WIN_Y )
