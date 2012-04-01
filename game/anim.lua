@@ -2,41 +2,40 @@
 
 local t = {}
 
+local DEFAULT_FPS = 4
+
 -- pass a desc (keyframe names and timing) plus a deck (converts
 -- keyframe names to sprites).
 --
 -- Returns a table mapping names to MOAIAnims
 --
-function t.make_anims(descs, deck)
+function t.make_anims(prop, descs, deck)
     local anims = {}
     for anim_name, desc in pairs(descs) do
         local curve = MOAIAnimCurve.new()
         curve:reserveKeys( #desc.frames )
 
-        local fps = desc.rate or 2
+        local fps = desc.rate or DEFAULT_FPS
 
-        for i,txtr_name in ipairs( desc.tAnimFrames ) do
-            txtr_name = 'chars/' .. string.lower(txtr_name)
-            local deck_idx = g_deck.by_name[txtr_name]
+        for i, txtr_name in ipairs( desc.frames ) do
+            txtr_name = string.lower(txtr_name)
+            local deck_idx = deck.names[txtr_name]
             if deck_idx == nil then
-                Trace(TT_Anna, "Anim sprite %s doesn't exist", txtr_name)
-            elseif desc.bFlip then 
-                local flip = g_deck.by_name[txtr_name .. '_xflip']
-                if flip then
-                    deck_idx = flip
-                else
-                    Trace(TT_Anna, "Sprite %s has no flipped version", txtr_name)
-                end
+                print(string.format("Anim sprite %s doesn't exist", txtr_name))
             end                
-            curve:setKey( i, (i-1) * dt, deck_idx, MOAIEaseType.FLAT )
+            curve:setKey( i, (i-1) / fps, deck_idx, MOAIEaseType.FLAT )
         end
 
         local anim = MOAIAnim:new() 
         anim:reserveLinks( 1 )
-        anim:setLink( 1, curve, self, MOAIProp2D.ATTR_INDEX )
-        anim:setMode( desc.mode )        
-        anim:setSpan( 0.0, #desc.tAnimFrames * desc.nTimePerFrame )
+        anim:setLink( 1, curve, prop, MOAIProp2D.ATTR_INDEX )
+        anim:setMode( desc.mode or MOAITimer.LOOP )        
+        anim:setSpan( 0.0, #desc.frames / fps )
 
-        self.anims[anim_name] = anim
+        anims[anim_name] = anim
     end
+
+    return anims
 end
+
+return t

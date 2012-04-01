@@ -48,10 +48,11 @@ end
 -- Returns an object with a :make(sprite_name [,scale)] method
 -- make() returns a MOAIProp2D.
 --
-function t.load_sheet(lua, sheet_scale, xsize)
+function t.load_sheet(lua, sheet_scale, xsize, xoff)
     if not sheet_scale then
         sheet_scale = 1
     end
+    if not xoff then xoff = 0 end
 
     local sheet = dofile ( lua )
     local frames = sheet.frames
@@ -92,9 +93,9 @@ function t.load_sheet(lua, sheet_scale, xsize)
             end
         end
 
-        r.x0 = sheet_scale * ( cr.x             )
+        r.x0 = sheet_scale * ( cr.x             ) + xoff
         r.y0 = sheet_scale * ( cr.y             )
-        r.x1 = sheet_scale * ( cr.x + cr.width  )
+        r.x1 = sheet_scale * ( cr.x + cr.width  ) + xoff
         r.y1 = sheet_scale * ( cr.y + cr.height )
         frame.geomRect = r
     end
