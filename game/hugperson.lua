@@ -145,7 +145,7 @@ function HugPerson.new(name)
     end
 
     person:setColor(1,1,1,0)
-    person:seekColor(1,1,1,1,1)
+    person:seekColor(1,1,1,1,0.1)
     person:setScl(0.1,0.1)
     person:seekScl(1024,768,3)
 
@@ -182,6 +182,7 @@ end
 
 function HugPerson.damage(person, damage)
     person.health = person.health - damage
+    person.npc.health = person.health
 
     for index, ds in ipairs(person.personData.damageStates) do
         if not person.damageStatesTriggered[index] then
@@ -207,6 +208,7 @@ function HugPerson.die(person)
     person:seekLoc(0, -600, 3)
     person:seekRot(30, 3)
     person.dead = true
+    person.npc.dead = true
 end
 
 return HugPerson

@@ -114,7 +114,9 @@ Hugs.hugThread:run(
             Hugs.leftPaw:setLoc(pawX, pawY)
             Hugs.rightPaw:setLoc(-pawX, pawY)
 
-            HugPerson.updateWithPaw(Hugs.person, Hugs.hugT)
+            for key, person in ipairs(Hugs.huggees) do
+                HugPerson.updateWithPaw(person, Hugs.hugT)
+            end
 
             coroutine.yield ()
         end

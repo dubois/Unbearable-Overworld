@@ -33,12 +33,12 @@ _makeNPCDef('AnnaKipnis')
 _makeNPCDef('adam')
 _makeNPCDef('benmj')
 _makeNPCDef('chrisremo')
-_makeNPCDef('christianmalone')
+--_makeNPCDef('christianmalone')
 _makeNPCDef('davidburns')
 _makeNPCDef('deantate')
 _makeNPCDef('deniserockwell')
 _makeNPCDef('elizabeth')
-_makeNPCDef('garydootan')
+--_makeNPCDef('garydootan')
 _makeNPCDef('GavinFitzgerald')
 _makeNPCDef('WhitneyHills')
 
@@ -84,7 +84,7 @@ function Npc.update(npc)
 
             local t = 1.0 - dist / Npc.maxDistanceToGetHugged
 
-            --print ("t: "..t)
+            print ("n: "..npc.name)
 
             npc.hugPerson.distanceFromBear = dist
 
@@ -98,8 +98,8 @@ function Npc.update(npc)
 
     -- switch to corpse
     local eyes = makeProp(Npc.eyesDeck, Npc.layer, 1, 1, Npc.basePriority + 2)
-    eyes:setParent(node)
-    eyes:setLoc(0,0.75)
+    eyes:setParent(npc.node)
+    eyes:setLoc(0,0.9)
     npc.eyes = eyes
 
     npc.node:seekRot(-90,2)
@@ -124,6 +124,7 @@ function Npc.makeNPC(name, x, y)
     local node = MOAIProp2D.new()
     node:setParent(npc)
     node:setPiv(0,-0.25)
+    Npc.layer:insertProp(node)
 
     local prop = makeProp(Npc.npcScaredDeck, Npc.layer, 2, 2, Npc.basePriority)
     prop:setParent(node)
