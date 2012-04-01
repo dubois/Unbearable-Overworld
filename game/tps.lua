@@ -135,4 +135,17 @@ function t.load_sheet(lua, sheet_scale, xsize, xoff)
     return deck
 end
 
+-- Return
+--   deck
+--   array<layer>
+function t.load_tilesheet(luafile, pngfile)
+    local sheet = dofile ( luafile )
+    local deck = MOAITileDeck2D.new ()
+
+    deck:setTexture( t.get_texture( pngfile ) )
+    deck:setRect(0,0,1.03,1.03)
+    deck:setSize(10, 10)
+    return deck, sheet.layers
+end
+
 return t
