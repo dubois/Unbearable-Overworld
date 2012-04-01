@@ -9,6 +9,24 @@ local sheet_bear = tps.load_sheet('art/sheet_bear.lua', nil, 2)
 local Ob = {}
 Ob.move_actions = {}
 
+Ob.anim_descs = {
+    -- <anim name> =  {
+    --     frames = { '<texture name>', '<texture name>' },
+    --     rate = <frames per second>,  -- optional; defaults to 2
+    -- }
+
+    idle = {
+        frames = { 'bear_standing', 'bear_standing1' },
+    },
+    walk_fwd = {
+        frames = { 'bear_walking1', 'bear_walking2' },
+    },
+    walk_back = {
+        frames = { 'bear_walking_back1', 'bear_walking_back2' },
+    }
+}
+
+
 function Ob:init()
     local body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
     body:addRect ( 0,0, 2-0.1, 1-0.1 )
