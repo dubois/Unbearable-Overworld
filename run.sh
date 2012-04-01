@@ -1,2 +1,2 @@
 cd game
-../moai config.lua hugs.lua
+../moai config.lua main.lua
