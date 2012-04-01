@@ -145,8 +145,6 @@ local function init_render()
     MOAISim.pushRenderPass ( b2d_layer )
 
     Npc.init(world, g_char_layer, -2)
-    Npc.makeNPC('AnnaKipnis', 5, 5)
-    Npc.makeNPC('ChrisJurney', 6, 6)
 
     Music.init()
     Music.setSong('hug')
