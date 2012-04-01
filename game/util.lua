@@ -39,6 +39,18 @@ function clamp(value, min, max)
     return value
 end
 
+function calcDistanceSq(x1,y1,x2,y2)
+    local xd = x1 - x2
+    local yd = y1 - y2
+    return xd*xd + yd*yd
+end
+
+function calcDistance(x1,y1,x2,y2)
+    local xd = x1 - x2
+    local yd = y1 - y2
+    return math.sqrt(xd*xd + yd*yd)
+end
+
 function randVec(size)
     local x = math.random(-size, size)
     local y = math.random(-size, size)

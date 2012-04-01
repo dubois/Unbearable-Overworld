@@ -11,6 +11,8 @@ local Npc = {
 
     force = 50,
     damping = 20,
+
+    maxDistanceToGetHugged = 3,
 }
 
 
@@ -19,6 +21,7 @@ function _makeNPCDef(name)
         hugPersonData = HugPerson.MakePersonData(name),
         happyFaceDeck = makeDeck('faces/'..name..'_happy_head'),
         scaredFaceDeck = makeDeck('faces/'..name..'_scared_head'),
+        name = name,
     }
 
     print('FACE: faces/'..name..'_happy_head')
@@ -30,12 +33,12 @@ _makeNPCDef('AnnaKipnis')
 _makeNPCDef('adam')
 _makeNPCDef('benmj')
 _makeNPCDef('chrisremo')
-_makeNPCDef('christianmalone')
+--_makeNPCDef('christianmalone')
 _makeNPCDef('davidburns')
 _makeNPCDef('deantate')
 _makeNPCDef('deniserockwell')
 _makeNPCDef('elizabeth')
-_makeNPCDef('garydootan')
+--_makeNPCDef('garydootan')
 _makeNPCDef('GavinFitzgerald')
 _makeNPCDef('WhitneyHills')
 
@@ -67,13 +70,36 @@ function Npc.update(npc)
         npc.prop:setPriority(-y)
         npc.head:setPriority(-y + 0.0001)
 
+        -- Check if I need to start gettin hugged
+        local bx,by = g_bear:getPos()
+        local dist = calcDistance(x,y,bx,by)
+
+        --print("dist:"..dist)
+
+        if dist < Npc.maxDistanceToGetHugged then
+            if not npc.hugPerson then
+                npc.hugPerson = HugPerson.new(npc.name)
+                npc.hugPerson.npc = npc
+            end
+
+            local t = 1.0 - dist / Npc.maxDistanceToGetHugged
+
+            print ("n: "..npc.name)
+
+            npc.hugPerson.distanceFromBear = dist
+
+        elseif npc.hugPerson and (dist >= Npc.maxDistanceToGetHugged) then
+            npc.hugPerson.disabled = true
+            npc.hugPerson = nil
+        end
+
         coroutine.yield()
     end
 
     -- switch to corpse
     local eyes = makeProp(Npc.eyesDeck, Npc.layer, 1, 1, Npc.basePriority + 2)
-    eyes:setParent(node)
-    eyes:setLoc(0,0.75)
+    eyes:setParent(npc.node)
+    eyes:setLoc(0,0.9)
     npc.eyes = eyes
 
     npc.node:seekRot(-90,2)
@@ -98,6 +124,7 @@ function Npc.makeNPC(name, x, y)
     local node = MOAIProp2D.new()
     node:setParent(npc)
     node:setPiv(0,-0.25)
+    Npc.layer:insertProp(node)
 
     local prop = makeProp(Npc.npcScaredDeck, Npc.layer, 2, 2, Npc.basePriority)
     prop:setParent(node)
@@ -108,6 +135,7 @@ function Npc.makeNPC(name, x, y)
     head:setParent(node)
     head:setLoc(0,1)
 
+    npc.name = name
     npc.npcDef = npcDef
     npc.node = node
     npc.prop = prop

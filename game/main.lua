@@ -208,7 +208,7 @@ function main()
 
     Npc = require("npc")
 
-    Hugs.person = HugPerson.new('AnnaKipnis', Hugs.layer)
+    --Hugs.person = HugPerson.new('AnnaKipnis', Hugs.layer)
 
     Npc.init(world, g_char_layer, -2)
 

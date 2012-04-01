@@ -250,4 +250,9 @@ function Ob:make_mover(dx,dy)
 	return start_or_stop_mover
 end
 
+function Ob:getPos()
+    return self.body:getPosition()
+end
+
+
 return Ob

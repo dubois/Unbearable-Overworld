@@ -14,12 +14,39 @@ Hugs = {
     pawYBottom =  -200,
     pawXLeftMin = -800,
     pawXLeftMax = -400,
+
+    huggees = {},
 }
 
 
 Blood = require("blood")
 HugPerson = require("hugperson")
 
+function Hugs.isBeingHugged(person)
+    for index, value in ipairs(Hugs.huggees) do
+        if person == value then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Hugs.addHuggee(person)
+    if Hugs.isBeingHugged(person) then
+        return
+    end
+
+    table.insert(Hugs.huggees, person)
+end
+
+function Hugs.removeHuggee(person)
+    for index, value in ipairs(Hugs.huggees) do
+        if person == value then
+            table.remove(Hugs.huggees, index)
+        end
+    end
+end
 
 function Hugs.init(viewport, uilayer)
     Hugs.viewport = viewport
@@ -29,6 +56,7 @@ function Hugs.init(viewport, uilayer)
 
     local layer = MOAILayer2D.new ()
     Hugs.layer = layer
+    HugPerson.layer = layer
     layer:setViewport ( viewport )
     MOAISim.pushRenderPass ( layer )
 
@@ -86,7 +114,9 @@ Hugs.hugThread:run(
             Hugs.leftPaw:setLoc(pawX, pawY)
             Hugs.rightPaw:setLoc(-pawX, pawY)
 
-            HugPerson.updateWithPaw(Hugs.person, Hugs.hugT)
+            for key, person in ipairs(Hugs.huggees) do
+                HugPerson.updateWithPaw(person, Hugs.hugT)
+            end
 
             coroutine.yield ()
         end
