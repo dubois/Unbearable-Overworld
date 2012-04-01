@@ -1,8 +1,30 @@
 local tps = require 'tps'
 
+-- Start super-saturated with oxygen so player has time to get
+-- accustomed to what's going on
+INITIAL_OXYGEN = 1.3
+
+-- false: disable oxygen depletion over time
+DISABLE_OXYGEN_DEPLETION = false
+
+-- true: enable tgb and yhn for setting oxygen and emotion directly
+ENABLE_DEBUG_KEYS = true
+
 -- seconds to go from 100% to 0% oxygen
 -- note that we start with a little more than 100% oxygen
-local SECONDS_OF_OXYGEN = 30
+SECONDS_OF_OXYGEN = 30
+
+-- The higher this is, the faster emotion tracks oxygen level
+EMOTION_TRACKING_STRENGTH = 0.005
+
+-- If happiness is >= the associated number, use that face
+local FACE_MAP = {
+    {'happier bear face', 1.1 },
+    {'happy bear face',   0.9 },
+    {'normal bear face',  0.5 },
+    {'sad bear face',     0.2 },
+    {'sadder bear face',  -100 }
+}
 
 local Ob = {}
 
@@ -11,28 +33,18 @@ local function pin(val, a,b)
 end
 
 function Ob:init()
+    self.deck = tps.load_sheet('art/sheet_bearface.lua')
+
     self.ticker = MOAICoroutine:new()
     self.ticker:run(self.on_tick, self)
 
-    local frames = {
-        'art/hugs/HorrorChris.png',
-        'art/hugs/ScaredChris.png',
-        'art/hugs/HappyChris.png',
-    }
-
-    self.emo_frames = {}
-    for i, f in ipairs(frames) do
-        local deck = tps.load_single(f)
-        self.emo_frames[#self.emo_frames + 1] = deck
-    end
-    
     local prop = MOAIProp2D.new()
-    prop:setDeck(self.emo_frames[1])
-    g_bearemo_layer:insertProp(prop)
+    prop:setDeck(self.deck)
+    prop:setIndex(self.deck.names['happy bear face'])
+    g_bearemo_layer:insertProp (prop)
     self.prop = prop
 
-    -- start super-saturated with oxygen
-    self.oxygen = 1.5
+    self.oxygen = INITIAL_OXYGEN
 
     -- a number between 0 and 1
     -- 0 is maximally sad
@@ -40,7 +52,7 @@ function Ob:init()
     self.emotion = 1
 
     -- debug keybinds for testing happiness
-    if true then
+    if ENABLE_DEBUG_KEYS then
         m = g_input.keydownmap
         -- oxygen
         m.t = function() self.oxygen = 1.0 end
@@ -54,35 +66,59 @@ function Ob:init()
 
 end
 
-function Ob:test__adjust_state_from_pos()
-    local x,y = g_bear:getLoc()
-    self.emotion = y / 10
-    self.oxygen = x / 10
+-- Pass: happiness level
+-- Return: deck index
+function Ob:_get_frame_for_emotion(h)
+    local found
+    for _, t in ipairs(FACE_MAP) do
+        if h > t[2] then
+            found = t
+            break
+        end
+    end
+    if not found then
+        print("WARN: couldn't look up emo", h)
+        found = FACE_MAP[#FACE_MAP]
+    end
+    
+    local idx = self.deck.names[found[1]]
+    if idx == nil then
+        print("WARN: couldn't find frame ".. found[1])
+        return 0
+    end
+
+    return idx
 end
 
 function Ob:on_tick()
     while true do
         -- burn some oxygen
-        if true then
+        if not DISABLE_OXYGEN_DEPLETION then
             self.oxygen = self.oxygen - deltaTime / SECONDS_OF_OXYGEN
             self.oxygen = pin(self.oxygen, 0, 2)
         end
 
-        -- Happiness tries to track oxygen level.  But not exactly, so
-        -- we can have temporary changes in happiness and sadness
+        -- Happiness tracks oxygen level
+        -- But don't let oxygen level increase happiness above 1
+        local dest = self.oxygen
+        if self.oxygen > self.emotion and self.oxygen > 1 then
+            dest = math.max(1, self.emotion)
+        end
+        local delta = dest - self.emotion
+        self.emotion = self.emotion + delta * EMOTION_TRACKING_STRENGTH
 
-        -- self:test__adjust_state_from_pos()
-
+        local oxy_01 = pin(self.oxygen, 0,1)
+        
         -- set color from oxygen
-        local r = self.oxygen
-        local g = self.oxygen
+        local r = 0.2 + 0.8 * oxy_01
+        local g = 0.2 + 0.8 * oxy_01
         local b = 1
         self.prop:setColor(r,g,b)
 
         -- set sprite from happiness
-        local idx = math.floor(self.emotion * #self.emo_frames) + 1
-        idx = pin(idx, 1, #self.emo_frames)
-        self.prop:setDeck(self.emo_frames[idx])
+        local idx = self:_get_frame_for_emotion(self.emotion)
+        self.prop:setIndex(idx)
+
         coroutine.yield()
     end
 end

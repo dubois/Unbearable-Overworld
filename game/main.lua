@@ -113,7 +113,7 @@ local function init_render()
     -- It only contains g_bearemo_layer
 	g_view_bear = MOAIViewport.new ()
 	g_view_bear:setSize ( WIN_X/2, 0, WIN_X, WIN_Y/2 )
-	g_view_bear:setScale ( 1024, 768 )
+	g_view_bear:setScale ( 800, 600 )  -- bear faces are authored at 800 x 600
     -- origin in lower-left
     g_view_bear:setOffset(-1,-1)
 
