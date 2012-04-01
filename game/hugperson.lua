@@ -9,7 +9,7 @@ local HugPerson = {
 }
 
 function HugPerson._makePerson(name, eye1x, eye1y, eye2x, eye2y, initialImage, huggedImage, damageStates)
-    print('faces/'..initialImage)
+    -- print('faces/'..initialImage)
     local personData = {
         initialDeck = makeDeck('faces/'..initialImage),
         huggedDeck = makeDeck('faces/'..huggedImage),
@@ -30,7 +30,7 @@ function _makeDmgState(triggerHealth, soundName, initialSpurtCount, duration, sp
     sound:load ( 'sound/'..soundName..'.wav' )
     sound:setVolume ( 1 )
     sound:setLooping ( false )
-    print(image)
+    -- print(image)
 
     return { triggerHealth = triggerHealth, sound = sound, initialSpurtCount = initialSpurtCount, duration = duration, spurtRate = spurtRate, deck = makeDeck('faces/'..image) }
 end
@@ -62,7 +62,7 @@ function _doDmgState(person, ds)
     print("Doing state " .. ds.triggerHealth .. " " .. ds.initialSpurtCount)
 
     if ds.sound then
-        print ("play")
+        -- print ("play")
         ds.sound:play()
     end
 
@@ -105,7 +105,7 @@ function HugPerson.thread(person)
 end
 
 function HugPerson.new(name, layer)
-    print("name "..name)
+    print("Hugging "..name)
     local personData = HugPerson.personLib[name]
     local person = makeProp(personData.initialDeck, layer, 1024, 768, HugPerson.priority)
     person.health = personData.healthMax

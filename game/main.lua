@@ -10,7 +10,9 @@ local util = require 'util'
 local WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
-local ENABLE_SPLASH = true
+DISABLE_MUSIC = true
+local ENABLE_SPLASH = false
+
 local ATTACH_CAMERA_TO_BEAR = true
 
 local function init_early()

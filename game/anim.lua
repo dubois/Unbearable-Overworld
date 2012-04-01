@@ -2,7 +2,7 @@
 
 local t = {}
 
-local DEFAULT_FPS = 4
+local DEFAULT_FPS = 8
 
 -- pass a desc (keyframe names and timing) plus a deck (converts
 -- keyframe names to sprites).
@@ -12,6 +12,11 @@ local DEFAULT_FPS = 4
 function t.make_anims(prop, descs, deck)
     local anims = {}
     for anim_name, desc in pairs(descs) do
+        -- assume it's in simplified form -- just the anim list
+        if desc.frames == nil then
+            desc = { frames=desc }
+        end
+
         local curve = MOAIAnimCurve.new()
         curve:reserveKeys( #desc.frames )
 
