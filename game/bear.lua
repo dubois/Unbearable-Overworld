@@ -95,7 +95,7 @@ function Ob:init()
     local prop = SHEET_BEAR:make('bear_walking1')
     prop:setParent(self.body)
     prop:setLoc(-1,0)
-    g_map_layer:insertProp(prop)
+    g_char_layer:insertProp(prop)
     self.prop = prop
 
 	g_input.keymap.w = self:make_mover(0,1)
