@@ -1,4 +1,6 @@
-Ob = {}
+local tps = require 'tps'
+
+local Ob = {}
 
 function Ob.main()
     while true do
@@ -23,4 +25,11 @@ end
 Ob.thread = MOAICoroutine.new()
 Ob.thread:run(Ob.main)
 
+function Ob:init()
+    local prop = MOAIProp2D.new()
+    prop:setDeck(tps.load_single('art/frame.png'))
+    g_end_layer:insertProp (prop)
+end
+
 return Ob
+
