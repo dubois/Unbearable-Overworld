@@ -7,14 +7,14 @@
 local tps = require 'tps'
 local util = require 'util'
 
-MAP_NAME = 'art/tiled_map.lua'
+MAP_NAME = 'art/tiled_map2.lua'
 
 WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
 DISABLE_MUSIC = true
 local ENABLE_SPLASH = false
-local ENABLE_PHYSICS_DEBUG = true
+local ENABLE_PHYSICS_DEBUG = false
 
 local ATTACH_CAMERA_TO_BEAR = true
 
