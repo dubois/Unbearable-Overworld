@@ -91,8 +91,8 @@ function Ob:init()
 
     local body = g_box2d:addBody ( MOAIBox2DBody.DYNAMIC )
     -- body:addRect ( 0,0, 2-0.1, 2-0.1 )
-    body:addCircle(0,1, 1-0.1)
-    body:setTransform ( 10, 10 )
+    body:addCircle(0,0, 1-0.1)
+    body:setTransform ( 20, 20 )
     body:setFixedRotation ( true )
     body:setMassData ( 1 )
     body:setLinearDamping( BEAR_DAMPING )
@@ -100,7 +100,7 @@ function Ob:init()
 
     local prop = SHEET_BEAR:make('bear_walking1')
     prop:setParent(self.body)
-    prop:setLoc(-1,0)
+    prop:setLoc(-1,-1)
     g_char_layer:insertProp(prop)
     self.prop = prop
 
@@ -199,6 +199,10 @@ end
 
 function Ob:on_tick()
     while true do
+        local x,y = self.body:getPosition()
+        -- + 1 because feet are lower than the physics origin
+        self.prop:setPriority(-y + 1)
+
         -- Re-evaluate anims, switching if desired
         local desired_anim = self:_get_desired_anim()
         if self._current_anim ~= desired_anim then
