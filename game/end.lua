@@ -93,18 +93,26 @@ function Ob:main()
         local def = npc.npcDef
         local state = npc:final_state()
 
-        text_name:setString(def.fake_name)
-        text_realname:setString('(' .. def.name .. ')')
         if state == 'dead' then
+            text_name:setString(def.fake_name .. '\n(R.I.P.)')
+            text_realname:setString('(' .. def.name .. ')')
+
             self.face:setDeck(npc.npcDef.scaredFaceDeck)
             text:setString(npc.npcDef.text_dead)
             waitForInput()
         elseif state == 'happy' then
+            text_name:setString(def.fake_name)
+            text_realname:setString('(' .. def.name .. ')')
+
             self.face:setDeck(npc.npcDef.happyFaceDeck)
             text:setString(npc.npcDef.text_alive)
             print (npc.npcDef.text_alive)
             waitForInput()
         elseif false then
+            -- testing
+            text_name:setString(def.fake_name .. '\n(test)')
+            text_realname:setString('(' .. def.name .. ')')
+
             self.face:setDeck(npc.npcDef.happyFaceDeck)
             text:setString(npc.npcDef.text_alive)
             coroutine.yield()
