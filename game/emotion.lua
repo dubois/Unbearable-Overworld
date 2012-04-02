@@ -12,7 +12,7 @@ ENABLE_DEBUG_KEYS = true
 
 -- seconds to go from 100% to 0% oxygen
 -- note that we start with a little more than 100% oxygen
-SECONDS_OF_OXYGEN = 20
+SECONDS_OF_OXYGEN = 40
 
 -- The higher this is, the faster emotion tracks oxygen level
 EMOTION_TRACKING_STRENGTH = 0.001
