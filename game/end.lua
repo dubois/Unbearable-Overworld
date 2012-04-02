@@ -35,18 +35,36 @@ function Ob:main()
     MOAISim.popRenderPass ()
     MOAISim.pushRenderPass( g_end_layer )
     
+    font = MOAIFont.new()
+    font:loadFromTTF('art/JandaSafeandSound.ttf', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,\'"-', 72)
+
+    text = MOAITextBox.new()
+    text:setFont(font)
+    text:setString("blah")
+    text:setRect(0,1024/2,1024,768)
+    text:setPriority(99)
+    local scx, scy = text:getScl()
+    text:setScl(scx,-scy)
+    g_end_layer:insertProp(text)
+
     for i,npc in ipairs(g_npc.npcs) do
         local state = npc:final_state()
         if state == 'dead' then
-            self.face:setDeck(npc.npcDef.npcScaredDeck)
-        elseif state == 'happy' then
+            self.face:setDeck(npc.npcDef.scaredFaceDeck)
+            text:setString(npc.npcDef.text_dead)
+            threadSleep(0.5)
+        elseif true or state == 'happy' then
             self.face:setDeck(npc.npcDef.happyFaceDeck)
+            text:setString(npc.npcDef.text_alive)
+            print (npc.npcDef.text_alive)
+            threadSleep(0.5)
         else
             self.face:setDeck(npc.npcDef.happyFaceDeck)
-            print('name',npc.npcDef.name,'nothing happened')
+            text:setString(npc.npcDef.text_alive)
+            coroutine.yield()
+            text:setString(npc.npcDef.text_dead)
+            coroutine.yield()
         end
-        coroutine.yield()
-        coroutine.yield()
     end
 end
 
