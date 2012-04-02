@@ -82,7 +82,8 @@ end
 
 function Ob:is_ready_to_hug()
     -- shitty text implementation
-    return self.test__ready_to_hug
+    -- return self.test__ready_to_hug
+    return Hugs and Hugs.huggees and (#Hugs.huggees > 0)
 end
 
 function Ob:init()
