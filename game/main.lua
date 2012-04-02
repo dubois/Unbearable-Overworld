@@ -15,7 +15,7 @@ local MAP_ZOOM = 30
 
 DISABLE_MUSIC = false
 local ENABLE_SPLASH = true
-local ENABLE_PHYSICS_DEBUG = true
+local ENABLE_PHYSICS_DEBUG = false
 
 local function init_early()
     MOAISim.openWindow ( "https://twitter.com/#!/petermolydeux/status/94102529461334017", WIN_X, WIN_Y )
@@ -141,6 +141,15 @@ local function init_render()
     g_char_layer:setViewport ( g_view_map )
     g_char_layer:setCamera(g_map_layer.camera)
 
+    -- viewport + layer for endgame rendering
+    -- origin in lower-left
+    g_view_end = MOAIViewport.new ()
+    g_view_end:setSize(0,0, WIN_X,WIN_Y)
+    g_view_end:setScale(1024, 768)
+    g_view_end:setOffset(-1,-1)
+    g_end_layer = MOAILayer2D.new ()
+    g_end_layer:setViewport(g_view_end)
+
 	-- Render quadrants
     MOAISim.pushRenderPass ( g_bearemo_layer )
     MOAISim.pushRenderPass ( g_map_layer )
@@ -149,11 +158,8 @@ local function init_render()
         MOAISim.pushRenderPass ( b2d_layer )
     end
 
-    -- viewport + layer for endgame rendering
-    -- origin in lower-left
-    g_view_end = MOAIViewport.new ()
-    g_view_end:setSize(0,0, WIN_X,WIN_Y)
-    g_view_end:setScale(800, 600)
+    -- for paul testing
+    -- MOAISim.pushRenderPass( g_end_layer )
 
     Music.init()
     Music.setSong('hug')
@@ -213,6 +219,9 @@ function main()
 
     g_bear = require 'bear'
     g_bear:init()
+
+    g_end = require 'end'
+    g_end:init()
 
     Npc = require("npc")
 

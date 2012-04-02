@@ -26,7 +26,7 @@ function _makeNPCDef(name)
 
     local CREDIT = CREDITS[string.lower(name)]
     if not CREDIT then
-        print("WARNING: can't find credits for"..name)
+        print("WARNING: can't find credits for "..name)
     else
         npcDef.fake_name = CREDIT[2]
         npcDef.text_alive = CREDIT[3]
