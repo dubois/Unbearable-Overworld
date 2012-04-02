@@ -151,7 +151,7 @@ function Ob:_create_layer(tiled, layer, is_obj)
                 prop:setLoc(x,y)
                 if is_obj then
                     g_char_layer:insertProp(prop)
-                    prop:setPriority(-y+1)
+                    prop:setPriority(-y+1.2)
                 else
                     g_map_layer:insertProp(prop)
                 end
