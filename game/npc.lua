@@ -24,6 +24,15 @@ function _makeNPCDef(name)
         name = name,
     }
 
+    local CREDIT = CREDITS[string.lower(name)]
+    if not CREDIT then
+        print("WARNING: can't find credits for"..name)
+    else
+        npcDef.fake_name = CREDIT[2]
+        npcDef.text_alive = CREDIT[3]
+        npcDef.text_dead = CREDIT[4]
+    end
+
     --print('FACE: faces/'..name..'_happy_head')
     Npc.npcDefs[name] = npcDef
 end
@@ -165,13 +174,25 @@ function Npc.makeNPC(name, x, y)
     npc.prop = prop
     npc.head = head
     npc.health = 100
+    -- hugPerson.hugged says if they were successfully hugged
     npc.hugPerson = nil
+    npc.beenHugged = false
     npc.dead = false
     npc.direction = math.random(0,360)
     npc.timeToChangeDirection = Npc.timeBetweenDirectionChanges
 
     npc.thread = MOAICoroutine:new()
     npc.thread:run(Npc.update, npc)
+
+    function npc:final_state()
+        if self.dead then
+            return 'dead'
+        elseif self.beenHugged then
+            return 'happy'
+        else
+            return 'none'
+        end
+    end
 
     table.insert(Npc.npcs, npc)
 end
@@ -202,7 +223,5 @@ function Npc.init(world, layer, basePriority)
 
     Npc.makeNpcs()
 end
-
-
 
 return Npc

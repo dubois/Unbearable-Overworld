@@ -6,6 +6,7 @@
 
 local tps = require 'tps'
 local util = require 'util'
+require 'credits'
 
 MAP_NAME = 'art/tiled_map2.lua'
 
@@ -15,8 +16,6 @@ local MAP_ZOOM = 30
 DISABLE_MUSIC = false
 local ENABLE_SPLASH = true
 local ENABLE_PHYSICS_DEBUG = true
-
-local ATTACH_CAMERA_TO_BEAR = true
 
 local function init_early()
     MOAISim.openWindow ( "https://twitter.com/#!/petermolydeux/status/94102529461334017", WIN_X, WIN_Y )
@@ -73,8 +72,6 @@ local function do_splash()
         main()
     end )
 end
-
-
 
 -- ----------------------------------------------------------------------
 -- Rendering, viewport management
@@ -152,6 +149,12 @@ local function init_render()
         MOAISim.pushRenderPass ( b2d_layer )
     end
 
+    -- viewport + layer for endgame rendering
+    -- origin in lower-left
+    g_view_end = MOAIViewport.new ()
+    g_view_end:setSize(0,0, WIN_X,WIN_Y)
+    g_view_end:setScale(800, 600)
+
     Music.init()
     Music.setSong('hug')
 end
@@ -213,17 +216,10 @@ function main()
 
     Npc = require("npc")
 
-    --Hugs.person = HugPerson.new('AnnaKipnis', Hugs.layer)
-
     Npc.init(world, g_char_layer, -2)
 
-
-    if ATTACH_CAMERA_TO_BEAR then
-        g_map_layer.camera:setParent ( g_bear.body )
-        g_map_layer.camera:setLoc ( 1, 1.5 )    -- bear is 2x3
-    else
-        g_map:setup_debug_input ()
-    end
+    g_map_layer.camera:setParent ( g_bear.body )
+    g_map_layer.camera:setLoc ( 1, 1.5 )    -- bear is 2x3
 
     -- simple cycle through viewport states, for testing
 	g_input.keymap.p = function(key,down)
