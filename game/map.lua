@@ -135,15 +135,25 @@ function Ob:_read_map(filename)
 	return grid
 end
 
-function Ob:_create_layer(deck, layer)
+function Ob:_create_layer(tiled, layer, is_obj)
+    local gdai = tiled.get_deck_and_index
     for x=0,layer.width-1 do
         for y=0,layer.height-1 do
-            local idx = layer.data[( y * layer.width ) + x + 1]
-            local prop = MOAIProp2D.new()
-            prop:setDeck(deck)
-            prop:setIndex(idx)
-            prop:setLoc(x,layer.height-y)
-            g_map_layer:insertProp(prop)
+            local gid = layer.data[( y * layer.width ) + x + 1]
+            if gid > 0 then
+                local deck, idx = gdai(tiled, gid)
+
+                local prop = MOAIProp2D.new()
+                prop:setDeck(deck)
+                prop:setIndex(idx)
+                prop:setLoc(x,layer.height-y)
+                if is_obj then
+                    g_char_layer:insertProp(prop)
+                    prop:setPriority(layer.height-y)
+                else
+                    g_map_layer:insertProp(prop)
+                end
+            end
         end
     end
 end
@@ -174,20 +184,17 @@ function Ob:get_bounds()
 end
 
 function Ob:init()
-	-- self.rows = self:_read_map('levels/1.txt')
-
-    self.tiled_deck, self.tiled_layers = tps.load_tilesheet(
-        'art/tiled_map.lua', 
-        'art/tiled_map.png' )
+    self.tiled = tps.load_tilesheet(MAP_NAME or 'art/tiled_map.lua')
+    self.tiled_layers = self.tiled.layers
 
     -- 1: background
     -- 2: background top
     -- 3: objects
     -- 4: bear collisions
     -- 5: victim collisions
-    self:_create_layer(self.tiled_deck, self.tiled_layers[1])
-    self:_create_layer(self.tiled_deck, self.tiled_layers[2])
-    self:_create_layer(self.tiled_deck, self.tiled_layers[3])
+    self:_create_layer(self.tiled, self.tiled_layers[1])
+    self:_create_layer(self.tiled, self.tiled_layers[2])
+    self:_create_layer(self.tiled, self.tiled_layers[3], g_char_layer)
     self:_create_collision(self.tiled_layers[4], COLLISION_LAYER_ALL)
     self:_create_collision(self.tiled_layers[5], COLLISION_LAYER_PEDESTRIAN)
 end

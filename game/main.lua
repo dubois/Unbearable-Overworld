@@ -7,11 +7,14 @@
 local tps = require 'tps'
 local util = require 'util'
 
+MAP_NAME = 'art/tiled_map.lua'
+
 WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
 DISABLE_MUSIC = true
 local ENABLE_SPLASH = false
+local ENABLE_PHYSICS_DEBUG = true
 
 local ATTACH_CAMERA_TO_BEAR = true
 
@@ -145,7 +148,9 @@ local function init_render()
     MOAISim.pushRenderPass ( g_bearemo_layer )
     MOAISim.pushRenderPass ( g_map_layer )
     MOAISim.pushRenderPass ( g_char_layer )
-    MOAISim.pushRenderPass ( b2d_layer )
+    if ENABLE_PHYSICS_DEBUG then
+        MOAISim.pushRenderPass ( b2d_layer )
+    end
 
     Music.init()
     Music.setSong('hug')

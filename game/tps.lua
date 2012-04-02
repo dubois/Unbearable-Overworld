@@ -138,14 +138,28 @@ end
 -- Return
 --   deck
 --   array<layer>
-function t.load_tilesheet(luafile, pngfile)
+function t.load_tilesheet(luafile)
     local sheet = dofile ( luafile )
-    local deck = MOAITileDeck2D.new ()
+    local pngfile = sheet.tilesets[1].image
 
-    deck:setTexture( t.get_texture( pngfile ) )
-    deck:setRect(0,0,1.03,1.03)
-    deck:setSize(10, 10)
-    return deck, sheet.layers
+    sheet.decks = {}
+    for i,tileset in ipairs(sheet.tilesets) do
+        local deck = MOAITileDeck2D.new ()
+        deck:setTexture( t.get_texture( tileset.image ) )
+        deck:setRect(0,0,1.03,1.03)
+        deck:setSize(10, 10)
+        sheet.decks[#sheet.decks+1] = deck
+    end
+
+    function sheet:get_deck_and_index(gid)
+        if gid >= 101 then
+            return self.decks[2], gid-100
+        else
+            return self.decks[1], gid
+        end
+    end
+    
+    return sheet
 end
 
 return t

@@ -15,7 +15,7 @@ return {
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "sprite sheet.png",
+      image = "art/tiled_map.png",
       imagewidth = 641,
       imageheight = 641,
       properties = {},
