@@ -60,6 +60,12 @@ local tmp = {
     'Delilah Baum was a renowned animal behaviorist specializing in bears. She was subjecting her past research to severe revision as the life was being squeezed out of her body.',
   },
   {
+  	'elizabeth',
+  	'Vera Chastain',
+  	'Despite being considered the foremost expert in the field of circus anthropology, Vera Chastain could find nothing in her peer-reviewed journals to explain the events that transpired that day. She realized the only resource she could consult was her heart.',
+  	'Despite being considered the foremost expert in the field of circus anthropology, Vera Chastain had learned nothing in her research and her peer-reviewed journals that was able to save her from the events that transpired that day.',
+  }
+  {
     'garydooton',
     'Branko Griffin',
     'Branko Griffin, the circus\' full-time bear feeder and personal trainer, always maintained a strictly professional relationship with the bear. It took a big bear hug for true friendship to bloom.',
@@ -94,6 +100,12 @@ local tmp = {
     'Maximillian Ides',
     'Inspired by his bear encounter, professional assassin Maximillian Ides added a new technique to his repertoire: luring his victims into wholehearted (and heart-stopping) embraces.',
     'Professional assassin Maximillian Ides fulfilled his contracts only on the Ides of March. After his encounter with the bear, that fateful month became a little safer.',
+  },
+  {
+  	'paul',
+  	'Christos Sessions',
+  	'After engaging in a delightful bear hug, real estate mogul Christos Sessions acquired the entire city in which the circus had set up, in the hopes of reencountering his ursine friend. Alas, the bear was never to be seen again, and Sessions lived out his days pining.',
+  	'Before the circus had set up shop, real estate mogul Christos Sessions acquired the entire surrounding city, appointing himself mayor and sole city councilman. However, the bear has no regard for municipal government.',
   },
   {
     'pietro',
