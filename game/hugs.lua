@@ -11,9 +11,11 @@ Hugs = {
     initUpd = 0,
 
     pawYTop =      200,
-    pawYBottom =  -200,
+    pawYBottom =  -100,
     pawXLeftMin = -800,
     pawXLeftMax = -400,
+
+    blockT = 0.24,
 
     huggees = {},
 }
@@ -30,6 +32,10 @@ function Hugs.isBeingHugged(person)
     end
 
     return false
+end
+
+function Hugs.isBlocking()
+    return Hugs.hugT >= Hugs.blockT
 end
 
 function Hugs.addHuggee(person)
@@ -64,7 +70,6 @@ function Hugs.init(viewport, uilayer)
     Hugs.pawDeck = makeDeck('hugs/LeftPaw')
 
     Hugs.cityProp = makeProp(Hugs.cityDeck, layer, 1024, 768, 0)
-    --Hugs.person = HugPerson.new('AnnaKipnis', layer)
     Hugs.leftPaw = makeProp(Hugs.pawDeck, layer, 1024, 512, 1)
     Hugs.leftPaw:setLoc(-400,0)
     Hugs.rightPaw = makeProp(Hugs.pawDeck, layer, -1024, 512, 1)
@@ -80,10 +85,6 @@ end
 
 function Hugs.onPointerEvent ( x, y )
     local wy = WIN_Y - y - WIN_Y/2
-	--local wx, wy = Hugs.uilayer:wndToWorld ( x, y )
-
-    print(" wy"..wy.." y"..y)
-
     Hugs.at = -(wy / 384) * Hugs.atLimit
     Hugs.at = clamp(Hugs.at, -Hugs.atLimit, Hugs.atLimit)
 end

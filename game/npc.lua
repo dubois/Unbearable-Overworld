@@ -84,7 +84,7 @@ function Npc.update(npc)
 
             local t = 1.0 - dist / Npc.maxDistanceToGetHugged
 
-            print ("n: "..npc.name)
+            --print ("n: "..npc.name)
 
             npc.hugPerson.distanceFromBear = dist
 
@@ -155,21 +155,16 @@ end
 function Npc.makeNpcs()
     local bx, by = g_map:get_bounds()
 
-    print('bounds: '..bx..' '..by)
-
     for key, npcDef in pairs(Npc.npcDefs) do
         local insideCollision = 1
         local x = 0
         local y = 0
 
         while insideCollision~=0 do
-            print ("name "..key)
             x = math.floor(math.random(1, bx - 1))
             y = math.floor(math.random(1, by - 1))
             
             insideCollision = g_map:query_collision(x,y)
-
-            print("name "..key.." tx "..x.." ty "..y.." coll "..insideCollision)
         end
 
         Npc.makeNPC(key, x, y)

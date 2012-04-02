@@ -1,12 +1,14 @@
 local HugPerson = {
     priority = 2,
+    backPriority = 0.5,
     damagePerSecMax = 5,
-    minTToDamage = 35,
-    minTToHug = 20,
+    minTToDamage = 50,
+    minTToHug = 25,
     personLib = {},
     layer = nil,
     maxDistanceFromBear = 3,
     disableRate = 1,
+    blockDistance = 2,
 
     fromXs = {-800, -1000, 1000},
     targetXs = { 0, -256, 256 },
@@ -14,7 +16,6 @@ local HugPerson = {
 }
 
 function HugPerson._makePerson(name, eye1x, eye1y, eye2x, eye2y, initialImage, huggedImage, damageStates)
-    -- print('faces/'..initialImage)
     local personData = {
         initialDeck = makeDeck('faces/'..initialImage),
         huggedDeck = makeDeck('faces/'..huggedImage),
@@ -83,12 +84,40 @@ end
 
 function HugPerson.thread(person)
     local t = 0
+    local pt = 0
 
     while not person.dead do
+        pt = t
+
         if not person.disabled then
             t = 1 - (person.distanceFromBear / HugPerson.maxDistanceFromBear)
+            local blockDistT = 1 - HugPerson.blockDistance / HugPerson.maxDistanceFromBear
+            print("bt:"..blockDistT)
+
+            if Hugs.isBlocking() then
+                if pt < (blockDistT - 0.01) then
+                    t = clamp(t, 0, blockDistT - 0.02)
+                end
+                print("block "..t.."pt "..pt)
+            else
+                print("notblock "..t.."pt "..pt )
+            end
+
+            if t > (blockDistT + 0.01) then
+                person.hugged = true
+                print("x"..t)
+            else
+                person.hugged = false
+                print("."..t)
+            end
         else
             t = t - HugPerson.disableRate * deltaTime
+        end
+
+        if person.hugged then
+            person:setPriority(HugPerson.priority)
+        else
+            person:setPriority(HugPerson.backPriority)
         end
 
         --t = t + 0.005
@@ -136,6 +165,7 @@ function HugPerson.new(name)
     person.distanceFromBear = 0
     person.disabled = false
     person.dead = false
+    person.hugged = false
     person.targetX = HugPerson.targetXs[HugPerson.nextTargetX]
     person.fromX = HugPerson.fromXs[HugPerson.nextTargetX]
 
@@ -162,7 +192,7 @@ function HugPerson.new(name)
 end
 
 function HugPerson.updateWithPaw(person, t)
-    if not person then
+    if (not person) or (not person.hugged) then
         return
     end
 
