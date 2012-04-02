@@ -138,18 +138,20 @@ end
 function Ob:_create_layer(tiled, layer, is_obj)
     local gdai = tiled.get_deck_and_index
     for x=0,layer.width-1 do
-        for y=0,layer.height-1 do
-            local gid = layer.data[( y * layer.width ) + x + 1]
+        for row=0,layer.height-1 do
+            -- rows are specified from top-down
+            local y = layer.height - row
+            local gid = layer.data[( row * layer.width ) + x + 1]
             if gid > 0 then
                 local deck, idx = gdai(tiled, gid)
 
                 local prop = MOAIProp2D.new()
                 prop:setDeck(deck)
                 prop:setIndex(idx)
-                prop:setLoc(x,layer.height-y)
+                prop:setLoc(x,y)
                 if is_obj then
                     g_char_layer:insertProp(prop)
-                    prop:setPriority(layer.height-y)
+                    prop:setPriority(-y+1)
                 else
                     g_map_layer:insertProp(prop)
                 end
