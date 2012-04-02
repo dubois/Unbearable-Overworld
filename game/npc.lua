@@ -69,6 +69,15 @@ function Npc.calcNewDir()
     return angleToVec(math.random(0,360))
 end
 
+function Npc.calcFlee(npc)
+    local bx,by = g_bear:getPos()
+    local x,y = npc:getPosition()
+    local dx = x - bx
+    local dy = y - by
+    local size = calcDistance(dx,dy,0,0)
+    return dx/size, dy/size
+end
+
 function Npc.update(npc)
     
     local curDirX, curDirY = Npc.calcNewDir()
@@ -77,13 +86,17 @@ function Npc.update(npc)
             break;
         end
 
-        npc:applyForce(curDirX * Npc.force, curDirY * Npc.force)
-
         npc.timeToChangeDirection = npc.timeToChangeDirection - deltaTime
         if npc.timeToChangeDirection < 0 then
             curDirX, curDirY = Npc.calcNewDir()
             npc.timeToChangeDirection = npc.timeToChangeDirection + Npc.timeBetweenDirectionChanges
         end
+
+        if time < g_bear.emotion.killHorrorTime then
+            curDirX, curDirY = Npc.calcFlee(npc)
+        end
+
+        npc:applyForce(curDirX * Npc.force, curDirY * Npc.force)
 
         local x,y = npc:getPosition()
         npc.prop:setPriority(-y)

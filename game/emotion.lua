@@ -21,6 +21,8 @@ HUG_PAYOFF = 0.3
 DAMAGE_EMO_RATE = 0.002
 KILL_PENALTY = 0.5
 
+KILL_HORROR_TIME = 4
+
 -- If happiness is >= the associated number, use that face
 local FACE_MAP = {
     {'happier bear face', 1.1 },
@@ -30,7 +32,7 @@ local FACE_MAP = {
     {'sadder bear face',  -100 }
 }
 
-local Ob = {}
+local Ob = {killHorrorTime = 0}
 
 local function pin(val, a,b)
     return math.min(math.max(val,a), b)
@@ -85,6 +87,7 @@ end
 
 function Ob:onKill()
     self.emotion = self.emotion - KILL_PENALTY
+    self.killHorrorTime = time + KILL_HORROR_TIME
 end
 
 -- Pass: happiness level
