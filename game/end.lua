@@ -20,6 +20,21 @@ function Ob:init()
 
 end
 
+function waitForInput()
+    local seen_input = false
+    local function onkbd(key,down)
+        if down then
+            seen_input = true
+        end
+    end
+
+    MOAIInputMgr.device.keyboard:setCallback(onkbd)
+    while not seen_input do
+        coroutine.yield()
+    end
+    -- threadSleep(0.3)
+end
+
 function Ob:main()
     while g_bear.emotion.oxygen > 0 do
         coroutine.yield()
@@ -54,18 +69,19 @@ function Ob:main()
         if state == 'dead' then
             self.face:setDeck(npc.npcDef.scaredFaceDeck)
             text:setString(npc.npcDef.text_dead)
-            threadSleep(3)
+            waitForInput()
         elseif state == 'happy' then
             self.face:setDeck(npc.npcDef.happyFaceDeck)
             text:setString(npc.npcDef.text_alive)
             print (npc.npcDef.text_alive)
-            threadSleep(3)
+            waitForInput()
         elseif false then
             self.face:setDeck(npc.npcDef.happyFaceDeck)
             text:setString(npc.npcDef.text_alive)
             coroutine.yield()
             text:setString(npc.npcDef.text_dead)
             coroutine.yield()
+            waitForInput()
         end
     end
 end
