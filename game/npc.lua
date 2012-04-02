@@ -168,8 +168,6 @@ function Npc.makeNpcs()
         end
 
         Npc.makeNPC(key, x, y)
-
-        break
     end
 end
 
