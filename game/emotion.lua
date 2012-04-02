@@ -141,7 +141,7 @@ function Ob:on_tick()
         self.prop:setIndex(idx)
 
         local badness = clamp(1-self.emotion,0,1)
-        print("e"..self.emotion.."b"..badness)
+        --print("e"..self.emotion.."b"..badness)
         Music.setBadness(badness)
 
         coroutine.yield()

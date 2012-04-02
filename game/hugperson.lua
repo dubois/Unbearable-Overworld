@@ -195,6 +195,7 @@ function HugPerson.updateWithPaw(person, t)
         person:setDeck(person.personData.huggedDeck)
         if not person.beenHugged then
             person.beenHugged = true
+            person.npc.beenHugged = true
             g_bear.emotion:onHug()
         end
     end
