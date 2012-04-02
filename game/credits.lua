@@ -64,7 +64,7 @@ local tmp = {
   	'Vera Chastain',
   	'Despite being considered the foremost expert in the field of circus anthropology, Vera Chastain could find nothing in her peer-reviewed journals to explain the events that transpired that day. She realized the only resource she could consult was her heart.',
   	'Despite being considered the foremost expert in the field of circus anthropology, Vera Chastain had learned nothing in her research and her peer-reviewed journals that was able to save her from the events that transpired that day.',
-  }
+  },
   {
     'garydooton',
     'Branko Griffin',
