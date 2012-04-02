@@ -40,6 +40,7 @@ end
 
 function Ob:init()
     self.deck = tps.load_sheet('art/sheet_bearface.lua')
+    self.backdeck = makeDeck('hugs/gmaps_screen_old')
 
     self.ticker = MOAICoroutine:new()
     self.ticker:run(self.on_tick, self)
@@ -49,6 +50,9 @@ function Ob:init()
     prop:setIndex(self.deck.names['happy bear face'])
     g_bearemo_layer:insertProp (prop)
     self.prop = prop
+
+    self.backprop = makeProp(self.backdeck, g_bearemo_layer, 800, 600, -50)
+    self.backprop:setLoc(400,300)
 
     self.oxygen = INITIAL_OXYGEN
 
