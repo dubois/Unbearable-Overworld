@@ -75,7 +75,7 @@ function Ob:main()
             text:setString(npc.npcDef.text_alive)
             print (npc.npcDef.text_alive)
             waitForInput()
-        elseif true then
+        elseif false then
             self.face:setDeck(npc.npcDef.happyFaceDeck)
             text:setString(npc.npcDef.text_alive)
             coroutine.yield()
