@@ -11,7 +11,7 @@ Hugs = {
     initUpd = 0,
 
     pawYTop =      200,
-    pawYBottom =  -200,
+    pawYBottom =  -100,
     pawXLeftMin = -800,
     pawXLeftMax = -400,
 
