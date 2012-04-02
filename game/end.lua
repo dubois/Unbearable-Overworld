@@ -51,11 +51,36 @@ function Ob:main()
     MOAISim.pushRenderPass( g_end_layer )
     
     font = MOAIFont.new()
-    font:loadFromTTF('art/JandaSafeandSound.ttf', ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,\'"-', 24)
+    font:loadFromTTF('art/JandaSafeandSound.ttf', ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,\'"-:;[]{}()|/\\', 24)
+
+    -- MOAIDebugLines.setStyle( MOAIDebugLines.TEXT_BOX, 2 )
+
+    text_name = MOAITextBox.new()
+    text_name:setAlignment(MOAITextBox.CENTER_JUSTIFY,
+                           MOAITextBox.LEFT_JUSTIFY)
+    text_name:setFont(font)
+    text_name:setString("")
+    text_name:setRect(0,0,350,120)
+    text_name:setPriority(99)
+    text_name:setYFlip(true)
+    text_name:setLoc(120, 530)
+    g_end_layer:insertProp (text_name)
+
+    text_realname = MOAITextBox.new()
+    text_realname:setAlignment(MOAITextBox.CENTER_JUSTIFY,
+                           MOAITextBox.LEFT_JUSTIFY)
+    text_realname:setFont(font)
+    text_realname:setString("")
+    text_realname:setRect(0,0,350,120)
+    text_realname:setPriority(99)
+    text_realname:setYFlip(true)
+    text_realname:setLoc(205, 100)
+    text_realname:setScl(.5,.5)
+    g_end_layer:insertProp (text_realname)
 
     text = MOAITextBox.new()
     text:setFont(font)
-    text:setString("blah")
+    text:setString("Too shy to hug anyone, the bear eventually died of loneliness and lack of oxygen.")
     text:setRect(0,0,400,768)
     text:setLoc(600,700)
     text:setPriority(99)
@@ -65,7 +90,11 @@ function Ob:main()
     g_end_layer:insertProp(text)
 
     for i,npc in ipairs(g_npc.npcs) do
+        local def = npc.npcDef
         local state = npc:final_state()
+
+        text_name:setString(def.fake_name)
+        text_realname:setString('(' .. def.name .. ')')
         if state == 'dead' then
             self.face:setDeck(npc.npcDef.scaredFaceDeck)
             text:setString(npc.npcDef.text_dead)
