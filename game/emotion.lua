@@ -63,7 +63,7 @@ function Ob:init()
         -- oxygen
         m.t = function() self.oxygen = 1.0 end
         m.g = function() self.oxygen = 0.5 end
-        m.b = function() self.oxygen = 0.1 end
+        m.b = function() self.oxygen = 0.01 end
         -- happiness
         m.y = function() self.emotion = 1.0 end
         m.h = function() self.emotion = 0.5 end

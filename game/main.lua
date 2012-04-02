@@ -13,9 +13,9 @@ MAP_NAME = 'art/tiled_map2.lua'
 WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
-DISABLE_MUSIC = false
-local ENABLE_SPLASH = true
-local ENABLE_PHYSICS_DEBUG = false
+DISABLE_MUSIC = true
+ENABLE_SPLASH = false
+ENABLE_PHYSICS_DEBUG = false
 
 local function init_early()
     MOAISim.openWindow ( "https://twitter.com/#!/petermolydeux/status/94102529461334017", WIN_X, WIN_Y )
@@ -220,12 +220,13 @@ function main()
     g_bear = require 'bear'
     g_bear:init()
 
-    g_end = require 'end'
-    g_end:init()
-
     Npc = require("npc")
+    g_npc = Npc
 
     Npc.init(world, g_char_layer, -2)
+
+    g_end = require 'end'
+    g_end:init()
 
     g_map_layer.camera:setParent ( g_bear.body )
     g_map_layer.camera:setLoc ( 1, 1.5 )    -- bear is 2x3
