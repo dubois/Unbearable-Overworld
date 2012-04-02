@@ -8,13 +8,13 @@ local tps = require 'tps'
 local util = require 'util'
 require 'credits'
 
-MAP_NAME = 'art/tiled_map2.lua'
+MAP_NAME = 'art/tiled_map3.lua'
 
 WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
-DISABLE_MUSIC = true
-ENABLE_SPLASH = false
+DISABLE_MUSIC = false
+ENABLE_SPLASH = true
 ENABLE_PHYSICS_DEBUG = false
 
 local function init_early()
@@ -181,38 +181,8 @@ local function _set_viewport_state(state)
     end
 end
 
--- ----------------------------------------------------------------------
--- Test scaffolding
--- ----------------------------------------------------------------------
-
-function init_test()
-    local sheet_test = tps.load_sheet ( 'art/sheet_out.lua' )
-    local sheet_map = tps.load_sheet ( 'art/sheet_map.lua',  0.5 )
-
-    -- local prop = sheet_map:make('bg/grass_1')
-    -- prop:setLoc(100,-100)
-    -- g_bearemo_layer:insertProp(prop)
-
-    -- local prop = sheet_map:make('bg/grass_2', 2)
-    -- prop:setLoc(130,-130)
-    -- g_bearemo_layer:insertProp(prop)
-
-    -- local prop = sheet_test:make('cathead')
-    -- prop:setLoc ( -100, -100 )
-    -- g_bearemo_layer:insertProp ( prop )
-
-    -- local prop = sheet_test:make('two')
-    -- prop:setLoc ( 0, 0 )
-    -- g_bearemo_layer:insertProp ( prop )
-
-    -- local prop = sheet_test:make('one')
-    -- prop:setLoc ( 100, 100 )
-    -- g_bearemo_layer:insertProp ( prop )
-end
-
 function main()
     init_render()
-	init_test()
 
     g_map = require 'map'
     g_map:init()

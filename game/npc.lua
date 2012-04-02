@@ -199,7 +199,7 @@ function Npc.makeNPC(name, x, y)
 end
 
 function Npc.makeNpcs()
-    local bx, by = g_map:get_bounds()
+    local bx0,by0, bx1,by1 = g_map:get_bounds()
 
     for key, npcDef in pairs(Npc.npcDefs) do
         local insideCollision = 1
@@ -207,8 +207,8 @@ function Npc.makeNpcs()
         local y = 0
 
         while insideCollision~=0 do
-            x = math.floor(math.random(1, bx - 1))
-            y = math.floor(math.random(1, by - 1))
+            x = math.floor(math.random(bx0, bx1))
+            y = math.floor(math.random(by0, by1))
             
             insideCollision = g_map:query_collision(x,y)
         end
