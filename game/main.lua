@@ -12,9 +12,9 @@ MAP_NAME = 'art/tiled_map2.lua'
 WIN_X, WIN_Y = 1024, 768
 local MAP_ZOOM = 30
 
-DISABLE_MUSIC = true
-local ENABLE_SPLASH = false
-local ENABLE_PHYSICS_DEBUG = false
+DISABLE_MUSIC = false
+local ENABLE_SPLASH = true
+local ENABLE_PHYSICS_DEBUG = true
 
 local ATTACH_CAMERA_TO_BEAR = true
 

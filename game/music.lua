@@ -66,11 +66,14 @@ function Music.setSong(name)
 end
 
 function Music.setBadness(t)
+    Music.badness = t
     if activeSong then
         local goodVolume = 1
-        if activeSong.badOverlay then
+        if not activeSong.badOverlay then
             goodVolume = 1 - Music.badness
         end
+
+        --print("g"..goodVolume.." b"..Music.badness)
 
         activeSong.goodSong:setVolume(goodVolume)
         activeSong.badSong:setVolume(Music.badness)

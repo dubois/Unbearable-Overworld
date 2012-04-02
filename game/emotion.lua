@@ -15,7 +15,7 @@ ENABLE_DEBUG_KEYS = true
 SECONDS_OF_OXYGEN = 30
 
 -- The higher this is, the faster emotion tracks oxygen level
-EMOTION_TRACKING_STRENGTH = 0.005
+EMOTION_TRACKING_STRENGTH = 0.001
 
 HUG_PAYOFF = 0.3
 DAMAGE_EMO_RATE = 0.002
@@ -139,6 +139,10 @@ function Ob:on_tick()
         -- set sprite from happiness
         local idx = self:_get_frame_for_emotion(self.emotion)
         self.prop:setIndex(idx)
+
+        local badness = clamp(1-self.emotion,0,1)
+        print("e"..self.emotion.."b"..badness)
+        Music.setBadness(badness)
 
         coroutine.yield()
     end

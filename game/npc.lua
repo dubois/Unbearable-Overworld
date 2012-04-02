@@ -24,7 +24,7 @@ function _makeNPCDef(name)
         name = name,
     }
 
-    print('FACE: faces/'..name..'_happy_head')
+    --print('FACE: faces/'..name..'_happy_head')
     Npc.npcDefs[name] = npcDef
 end
 
@@ -73,6 +73,7 @@ function Npc.update(npc)
         -- Check if I need to start gettin hugged
         local bx,by = g_bear:getPos()
         local dist = calcDistance(x,y,bx,by)
+        local dist = dist - 1.4
 
         --print("dist:"..dist)
 

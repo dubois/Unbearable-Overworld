@@ -203,7 +203,7 @@ function HugPerson.updateWithPaw(person, t)
         local airT = (t - HugPerson.minTToHug) / (100 - HugPerson.minTToHug)
         local air = airT * HugPerson.airPerTPerSecond * deltaTime
         g_bear.emotion:addAir(air)
-        print("a: "..air.." ba: "..g_bear.emotion.oxygen)
+        --print("a: "..air.." ba: "..g_bear.emotion.oxygen)
     end
 
     if person.health <= 0 then  
@@ -236,8 +236,8 @@ function HugPerson.damage(person, damage)
         HugPerson.die(person)
     end
 
-    local badVolume = (person.personData.healthMax - person.health) / person.personData.healthMax
-    Music.setBadness(badVolume)
+    --local badVolume = (person.personData.healthMax - person.health) / person.personData.healthMax
+    --Music.setBadness(badVolume)
 end
 
 
