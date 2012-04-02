@@ -9,6 +9,7 @@ local HugPerson = {
     maxDistanceFromBear = 3,
     disableRate = 1,
     blockDistance = 2,
+    airPerTPerSecond = 3,
 
     fromXs = {-800, -1000, 1000},
     targetXs = { 0, -256, 256 },
@@ -65,8 +66,6 @@ HugPerson.person]]--
 
 function _doDmgState(person, ds)
 
-    print("Doing state " .. ds.triggerHealth .. " " .. ds.initialSpurtCount)
-
     if ds.sound then
         -- print ("play")
         ds.sound:play()
@@ -92,23 +91,18 @@ function HugPerson.thread(person)
         if not person.disabled then
             t = 1 - (person.distanceFromBear / HugPerson.maxDistanceFromBear)
             local blockDistT = 1 - HugPerson.blockDistance / HugPerson.maxDistanceFromBear
-            print("bt:"..blockDistT)
 
             if Hugs.isBlocking() then
                 if pt < (blockDistT - 0.01) then
                     t = clamp(t, 0, blockDistT - 0.02)
                 end
-                print("block "..t.."pt "..pt)
             else
-                print("notblock "..t.."pt "..pt )
             end
 
             if t > (blockDistT + 0.01) then
                 person.hugged = true
-                print("x"..t)
             else
                 person.hugged = false
-                print("."..t)
             end
         else
             t = t - HugPerson.disableRate * deltaTime
@@ -168,6 +162,7 @@ function HugPerson.new(name)
     person.hugged = false
     person.targetX = HugPerson.targetXs[HugPerson.nextTargetX]
     person.fromX = HugPerson.fromXs[HugPerson.nextTargetX]
+    person.beenHappy = false
 
     HugPerson.nextTargetX = HugPerson.nextTargetX + 1
     if HugPerson.nextTargetX > #HugPerson.targetXs then
@@ -198,6 +193,17 @@ function HugPerson.updateWithPaw(person, t)
 
     if person.health >= person.personData.healthMax and t > HugPerson.minTToHug then
         person:setDeck(person.personData.huggedDeck)
+        if not person.beenHugged then
+            person.beenHugged = true
+            g_bear.emotion:onHug()
+        end
+    end
+
+    if t > HugPerson.minTToHug and not person.dead then
+        local airT = (t - HugPerson.minTToHug) / (100 - HugPerson.minTToHug)
+        local air = airT * HugPerson.airPerTPerSecond * deltaTime
+        g_bear.emotion:addAir(air)
+        print("a: "..air.." ba: "..g_bear.emotion.oxygen)
     end
 
     if person.health <= 0 then  
@@ -213,6 +219,8 @@ end
 function HugPerson.damage(person, damage)
     person.health = person.health - damage
     person.npc.health = person.health
+
+    g_bear.emotion:onDamage(damage)
 
     for index, ds in ipairs(person.personData.damageStates) do
         if not person.damageStatesTriggered[index] then
@@ -239,6 +247,7 @@ function HugPerson.die(person)
     person:seekRot(30, 3)
     person.dead = true
     person.npc.dead = true
+    g_bear.emotion:onKill()
 end
 
 return HugPerson

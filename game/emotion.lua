@@ -17,6 +17,10 @@ SECONDS_OF_OXYGEN = 30
 -- The higher this is, the faster emotion tracks oxygen level
 EMOTION_TRACKING_STRENGTH = 0.005
 
+HUG_PAYOFF = 0.3
+DAMAGE_EMO_RATE = 0.002
+KILL_PENALTY = 0.5
+
 -- If happiness is >= the associated number, use that face
 local FACE_MAP = {
     {'happier bear face', 1.1 },
@@ -64,6 +68,23 @@ function Ob:init()
         m.n = function() self.emotion = 0.1 end
     end
 
+end
+
+function Ob:addAir(a)
+    self.oxygen = self.oxygen + a
+    self.oxygen = clamp(self.oxygen,0,1)
+end
+
+function Ob:onHug()
+    self.emotion = self.emotion + HUG_PAYOFF
+end
+
+function Ob:onDamage(damage)
+    self.emotion = self.emotion - (DAMAGE_EMO_RATE * damage)
+end
+
+function Ob:onKill()
+    self.emotion = self.emotion - KILL_PENALTY
 end
 
 -- Pass: happiness level
