@@ -66,7 +66,7 @@ function Hugs.init(viewport, uilayer)
     layer:setViewport ( viewport )
     MOAISim.pushRenderPass ( layer )
 
-    Hugs.cityDeck = makeDeck('hugs/city')
+    Hugs.cityDeck = makeDeck('hugs/gmaps_screen')
     Hugs.pawDeck = makeDeck('hugs/LeftPaw')
 
     Hugs.cityProp = makeProp(Hugs.cityDeck, layer, 1024, 768, 0)
