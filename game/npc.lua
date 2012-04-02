@@ -28,19 +28,29 @@ function _makeNPCDef(name)
     Npc.npcDefs[name] = npcDef
 end
 
-_makeNPCDef('ChrisJurney')
-_makeNPCDef('AnnaKipnis')
+
 _makeNPCDef('adam')
+_makeNPCDef('alexrubens')
+_makeNPCDef('AnnaKipnis')
 _makeNPCDef('benmj')
+_makeNPCDef('ChrisJurney')
 _makeNPCDef('chrisremo')
---_makeNPCDef('christianmalone')
+_makeNPCDef('christianmalone')
 _makeNPCDef('davidburns')
 _makeNPCDef('deantate')
 _makeNPCDef('deniserockwell')
 _makeNPCDef('elizabeth')
---_makeNPCDef('garydootan')
+_makeNPCDef('garydooton')
 _makeNPCDef('GavinFitzgerald')
+_makeNPCDef('gregrice')
+_makeNPCDef('joelburgess')
+_makeNPCDef('mikecosimano')
+_makeNPCDef('murdersandwich')
+_makeNPCDef('pietro')
+_makeNPCDef('rentaylor')
+_makeNPCDef('scottlagrasta')
 _makeNPCDef('WhitneyHills')
+
 
 function Npc.calcNewDir()
     if math.random(0,1) < 0.3 then
