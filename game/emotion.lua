@@ -2,7 +2,7 @@ local tps = require 'tps'
 
 -- Start super-saturated with oxygen so player has time to get
 -- accustomed to what's going on
-INITIAL_OXYGEN = 1.3
+INITIAL_OXYGEN = 1.7
 
 -- false: disable oxygen depletion over time
 DISABLE_OXYGEN_DEPLETION = false
@@ -12,7 +12,7 @@ ENABLE_DEBUG_KEYS = true
 
 -- seconds to go from 100% to 0% oxygen
 -- note that we start with a little more than 100% oxygen
-SECONDS_OF_OXYGEN = 40
+SECONDS_OF_OXYGEN = 20
 
 -- The higher this is, the faster emotion tracks oxygen level
 EMOTION_TRACKING_STRENGTH = 0.001
