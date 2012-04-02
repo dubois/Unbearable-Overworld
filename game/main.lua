@@ -221,6 +221,8 @@ function main()
     g_map_layer.camera:setParent ( g_bear.body )
     g_map_layer.camera:setLoc ( 1, 1.5 )    -- bear is 2x3
 
+    g_end = require('end')
+
     -- simple cycle through viewport states, for testing
 	g_input.keymap.p = function(key,down)
         if down then
