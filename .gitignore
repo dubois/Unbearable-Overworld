@@ -2,3 +2,4 @@
 *.dll
 moai
 .DS_Store
+._*
