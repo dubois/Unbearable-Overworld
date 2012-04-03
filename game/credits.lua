@@ -14,8 +14,8 @@ local tmp = {
   {
     'AnnaKipnis',
     'Molly Fabrone',
-    'Anna Kipnis managed the Orphanage for Frostbitten Children in Anderson, Alaska. A charming story about a friendly bear was just what they needed to warm their little hearts.',
-    'Anna Kipnis managed the Orphanage for Frostbitten Children in Anderson, Alaska. After her death by bear, the orphanage\'s heating bill went unpaid and all 37 of the little tykes froze to death.',
+    'Molly Fabrone managed the Orphanage for Frostbitten Children in Anderson, Alaska. A charming story about a friendly bear was just what they needed to warm their little hearts.',
+    'Molly Fabrone managed the Orphanage for Frostbitten Children in Anderson, Alaska. After her death by bear, the orphanage\'s heating bill went unpaid and all 37 of the little tykes froze to death.',
   },
   {
     'benmj',

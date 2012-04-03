@@ -80,7 +80,7 @@ function Ob:main()
 
     text = MOAITextBox.new()
     text:setFont(font)
-    text:setString("Too shy to hug anyone, the bear eventually died of loneliness and lack of oxygen.")
+    text:setString("")
     text:setRect(0,0,400,768)
     text:setLoc(600,700)
     text:setPriority(99)
@@ -89,11 +89,13 @@ function Ob:main()
     text:setScl(scx,-scy)
     g_end_layer:insertProp(text)
 
+	local seen = false
     for i,npc in ipairs(g_npc.npcs) do
         local def = npc.npcDef
         local state = npc:final_state()
 
         if state == 'dead' then
+			seen = true
             text_name:setString(def.fake_name .. '\n(R.I.P.)')
             text_realname:setString('(' .. def.name .. ')')
 
@@ -101,6 +103,7 @@ function Ob:main()
             text:setString(npc.npcDef.text_dead)
             waitForInput()
         elseif state == 'happy' then
+			seen = true
             text_name:setString(def.fake_name)
             text_realname:setString('(' .. def.name .. ')')
 
@@ -121,7 +124,12 @@ function Ob:main()
             waitForInput()
         end
     end
+	if not seen then
+		text:setString("Too shy to hug anyone, the bear eventually died of loneliness and lack of oxygen.")
+		waitForInput()
+	end
+
+	text:setString("Thanks for playing!\n\n-- Adam, Chris, Chris, Elizabeth, Paul, and Pietro")
 end
 
 return Ob
-
